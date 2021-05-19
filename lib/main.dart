@@ -12,6 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
+      debugShowCheckedModeBanner: false, // deleted debug bar in AppBar Widget
       title: 'Flutter Simple Login Demo',
       theme: new ThemeData(primarySwatch: Colors.blue),
       home: new LoginPage(),
