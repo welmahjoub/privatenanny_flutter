@@ -1,29 +1,43 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'user.dart';
 
 class Service {
-  FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseAuth auth = FirebaseAuth.instance;
 
-  Future<void> create(email, password) async {
+  Stream<UserModal> get user {
+    return auth.authStateChanges().asyncMap(
+          (user) => UserModal(user.uid, user.email, ""),
+        );
+  }
+
+  Future<UserModal> create(email, password) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
       print("create ok ");
+      UserModal user = UserModal(userCredential.user.uid, email, password);
+
+      return user;
     } catch (e) {
       print(e);
+      return null;
     }
   }
 
-  Future<User> connecter(email, password) async {
+  Future<UserModal> connecter(email, password) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
-      return userCredential.user;
+
+      UserModal user = UserModal(userCredential.user.uid, email, password);
+
+      return user;
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-      }
+      return null;
     }
+  }
+
+  Future<void> logout() async {
+    await FirebaseAuth.instance.signOut();
   }
 }

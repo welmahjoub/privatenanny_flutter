@@ -1,29 +1,7 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:private_nanny/service.dart';
-import 'passwordForgot_page.dart';
-import 'package:private_nanny/voice.dart';
-import 'login.dart';
 
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(VoiceHome());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-
-      debugShowCheckedModeBanner: false, // deleted debug bar in AppBar Widget
-      title: 'Flutter Simple Login Demo',
-      theme: new ThemeData(primarySwatch: Colors.blue),
-      home: new LoginPage(),
-    );
-  }
-}
+import 'Home.dart';
+import 'service.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -38,8 +16,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordFilter = new TextEditingController();
   String _email = "";
   String _password = "";
-  FormType _form = FormType
-      .login; // our default setting is to login, and we should switch to creating an account when the user chooses to
+  FormType _form = FormType.login;
 
   _LoginPageState() {
     _emailFilter.addListener(_emailListen);
@@ -91,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _buildBar(BuildContext context) {
     return new AppBar(
-      title: new Text("Authentification"),
+      title: new Text("Login Page"),
       centerTitle: true,
     );
   }
@@ -133,14 +110,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             new FlatButton(
               child: new Text('Forgot Password?'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ForgotPwd(),
-                  ),
-                );
-              },
+              onPressed: _passwordReset,
             )
           ],
         ),
@@ -163,22 +133,36 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  // These functions can self contain any user auth logic required, they all have access to _email and _password
-
   void _loginPressed() {
     Service _service = Service();
-    _service.connecter(_email, _password);
+
+    _service.connecter(_email, _password).then((value) => {
+          if (value != null)
+            {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => HomeScreen(email: value.email)))
+            }
+        });
     print('The user wants to login with $_email and $_password');
   }
 
   void _createAccountPressed() {
     print('The user wants to create an accoutn with $_email and $_password');
     Service _service = Service();
-    _service.create(_email, _password);
+    _service.create(_email, _password).then((value) => {
+          if (value != null)
+            {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => HomeScreen(email: value.email)))
+            }
+        });
   }
 
   void _passwordReset() {
     print("The user wants a password reset request sent to $_email");
-
   }
 }
