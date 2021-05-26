@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'main.dart';
-import 'service.dart';
+import '../main.dart';
+import '../service/auth.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key, this.email}) : super(key: key);
@@ -12,7 +12,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Service _userService = Service();
+  AuthService _authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Text("Bonjour " + widget.email),
             TextButton(
               onPressed: () async {
-                await _userService.logout();
+                await _authService.logout();
 
                 Navigator.pushAndRemoveUntil(
                   context,
