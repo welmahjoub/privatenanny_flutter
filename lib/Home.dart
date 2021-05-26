@@ -17,23 +17,32 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text("Page Accueil")),
+        appBar: AppBar(
+          //leading: Icon(Icons.account_circle_rounded),
+          //automaticallyImplyLeading: false,
+          title: Text("Accueil"),
+          centerTitle: true,
+          actions: [
+            Icon(Icons.account_circle_rounded),
+            Container(width: 15)
+          ],
+        ),
+        drawer: Drawer(),
         body: Center(
             child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Text("Bonjour " + widget.email),
-            TextButton(
-              onPressed: () async {
-                await _userService.logout();
-
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MyApp(),
-                  ),
-                  (route) => false,
-                );
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Text("Bonjour " + widget.email),
+                TextButton(
+                  onPressed: () async {
+                    await _userService.logout();
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MyApp(),
+                      ),
+                      (route) => false,
+                    );
               },
               child: Text('logout'),
             ),
