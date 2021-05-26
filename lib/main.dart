@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:private_nanny/service.dart';
+import 'passwordForgot_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -86,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _buildBar(BuildContext context) {
     return new AppBar(
-      title: new Text("Simple Login Example"),
+      title: new Text("Authentification"),
       centerTitle: true,
     );
   }
@@ -128,7 +129,14 @@ class _LoginPageState extends State<LoginPage> {
             ),
             new FlatButton(
               child: new Text('Forgot Password?'),
-              onPressed: _passwordReset,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ForgotPwd(),
+                  ),
+                );
+              },
             )
           ],
         ),
