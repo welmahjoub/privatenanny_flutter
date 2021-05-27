@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:private_nanny/page/passwordForgot_page.dart';
+import 'package:private_nanny/page/voice.dart';
 
 import 'home.dart';
 import '../service/auth.dart';
@@ -142,7 +144,8 @@ class _LoginPageState extends State<LoginPage> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => HomeScreen(email: value.email)))
+                      builder: (context) =>
+                          VoiceHome())) //HomeScreen(email: value.email)
             }
         });
     print('The user wants to login with $_email and $_password');
@@ -155,14 +158,14 @@ class _LoginPageState extends State<LoginPage> {
           if (value != null)
             {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => HomeScreen(email: value.email)))
+                  context, MaterialPageRoute(builder: (context) => VoiceHome()))
             }
         });
   }
 
   void _passwordReset() {
     print("The user wants a password reset request sent to $_email");
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => ForgotPwd()));
   }
 }
