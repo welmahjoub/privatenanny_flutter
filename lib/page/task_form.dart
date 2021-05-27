@@ -1,17 +1,15 @@
+
 import 'package:flutter/material.dart';
 
-import 'Home.dart';
-import 'service.dart';
 
-class LoginPage extends StatefulWidget {
+
+class TaskFormPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => new _LoginPageState();
+  State createState() => new _TaskFormPageState();
 }
-
-// Used for controlling whether the user is loggin or creating an account
 enum FormType { login, register }
+class _TaskFormPageState extends State<TaskFormPage> {
 
-class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailFilter = new TextEditingController();
   final TextEditingController _passwordFilter = new TextEditingController();
   String _email = "";
@@ -39,7 +37,6 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  // Swap in between our two forms, registering and logging in
   void _formChange() async {
     setState(() {
       if (_form == FormType.register) {
@@ -53,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: _buildBar(context),
+      appBar: _buildBar("Login test"),
       body: new Container(
         padding: EdgeInsets.all(16.0),
         child: new Column(
@@ -66,9 +63,9 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildBar(BuildContext context) {
+  Widget _buildBar(String title) {
     return new AppBar(
-      title: new Text("Login Page"),
+      title: new Text(title),
       centerTitle: true,
     );
   }
@@ -134,32 +131,32 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _loginPressed() {
-    Service _service = Service();
+    // AuthService _service = AuthService();
 
-    _service.connecter(_email, _password).then((value) => {
-          if (value != null)
-            {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => HomeScreen(email: value.email)))
-            }
-        });
-    print('The user wants to login with $_email and $_password');
+    // _service.login(_email, _password).then((value) => {
+    //   if (value != null)
+    //     {
+    //       Navigator.push(
+    //           context,
+    //           MaterialPageRoute(
+    //               builder: (context) => HomeScreen(email: value.email)))
+    //     }
+    // });
+    // print('The user wants to login with $_email and $_password');
   }
 
   void _createAccountPressed() {
     print('The user wants to create an accoutn with $_email and $_password');
-    Service _service = Service();
-    _service.create(_email, _password).then((value) => {
-          if (value != null)
-            {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => HomeScreen(email: value.email)))
-            }
-        });
+    // AuthService _authService = AuthService();
+    // _authService.create(_email, _password).then((value) => {
+    //   if (value != null)
+    //     {
+    //       Navigator.push(
+    //           context,
+    //           MaterialPageRoute(
+    //               builder: (context) => HomeScreen(email: value.email)))
+    //     }
+    // });
   }
 
   void _passwordReset() {
