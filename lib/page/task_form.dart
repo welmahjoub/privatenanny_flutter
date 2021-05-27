@@ -1,165 +1,109 @@
 
 import 'package:flutter/material.dart';
-
-
+import 'package:private_nanny/model/task.dart';
+import 'package:private_nanny/widget/datetime_piker.dart';
 
 class TaskFormPage extends StatefulWidget {
   @override
   State createState() => new _TaskFormPageState();
+  TaskFormPage({Key key, this.task}) : super(key: key);
+  Task task;
 }
-enum FormType { login, register }
+
 class _TaskFormPageState extends State<TaskFormPage> {
-
-  final TextEditingController _emailFilter = new TextEditingController();
-  final TextEditingController _passwordFilter = new TextEditingController();
-  String _email = "";
-  String _password = "";
-  FormType _form = FormType.login;
-
-  _LoginPageState() {
-    _emailFilter.addListener(_emailListen);
-    _passwordFilter.addListener(_passwordListen);
+  bool _switchValue = false;
+  @override
+  void initState() {
+    super.initState();
+    _titleController.text = widget.task.title;
+    _detailController.text = widget.task.detail;
   }
-
-  void _emailListen() {
-    if (_emailFilter.text.isEmpty) {
-      _email = "";
-    } else {
-      _email = _emailFilter.text;
-    }
-  }
-
-  void _passwordListen() {
-    if (_passwordFilter.text.isEmpty) {
-      _password = "";
-    } else {
-      _password = _passwordFilter.text;
-    }
-  }
-
-  void _formChange() async {
-    setState(() {
-      if (_form == FormType.register) {
-        _form = FormType.login;
-      } else {
-        _form = FormType.register;
-      }
-    });
-  }
+  final TextEditingController _titleController = new TextEditingController();
+  final TextEditingController _detailController = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: _buildBar("Login test"),
-      body: new Container(
-        padding: EdgeInsets.all(16.0),
-        child: new Column(
-          children: <Widget>[
-            _buildTextFields(),
-            _buildButtons(),
-          ],
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Nouvelle tâche'),
       ),
+      body: SingleChildScrollView(
+        child:  Container(
+          padding: EdgeInsets.only(left: 16, right: 16, top: 16 ),
+          child: Column(
+            children: [
+              _buildTextFields(),
+              Divider(
+                height: 40,
+              ),
+              _buildReminder()
+            ],
+          ),
+        ),
+      )
     );
   }
 
-  Widget _buildBar(String title) {
-    return new AppBar(
-      title: new Text(title),
-      centerTitle: true,
+  Widget _buildReminder() {
+    return Container(
+        child: Column(
+          children: [
+            SwitchListTile(
+                title: Text('Rappel'),
+                value: _switchValue,
+                onChanged: (bool value) {
+                  setState(() {
+                    _switchValue = !_switchValue;
+                  });
+                }),
+            Visibility(
+              child: Column(
+                children: [
+                  Container(
+                      padding: EdgeInsets.only(left: 7),
+                      child: DatetimePickerWidget()
+                  )
+                ],
+              ),
+              visible: _switchValue,
+            )
+          ],
+        )
     );
   }
 
   Widget _buildTextFields() {
-    return new Container(
-      child: new Column(
-        children: <Widget>[
-          new Container(
-            child: new TextField(
-              controller: _emailFilter,
-              decoration: new InputDecoration(labelText: 'Email'),
+    return Container(
+      child: Column(
+        children: [
+          Container(
+            child: TextFormField(
+              maxLength: 30,
+              controller: _titleController,
+              decoration: InputDecoration(
+                labelText: 'Intitulé',
+              ),
+              onChanged: (String value) {
+                widget.task.title = value;
+              },
             ),
           ),
-          new Container(
-            child: new TextField(
-              controller: _passwordFilter,
-              decoration: new InputDecoration(labelText: 'Password'),
-              obscureText: true,
+          Container(
+            margin: EdgeInsets.only(top: 6),
+            child: TextField(
+              maxLength: 255,
+              controller: _detailController,
+              minLines: 1,
+              maxLines: 5,
+              keyboardType: TextInputType.multiline,
+              textInputAction: TextInputAction.newline,
+              decoration: InputDecoration(
+                  labelText: 'Détail'
+              ),
             ),
-          )
+          ),
         ],
       ),
     );
-  }
-
-  Widget _buildButtons() {
-    if (_form == FormType.login) {
-      return new Container(
-        child: new Column(
-          children: <Widget>[
-            new RaisedButton(
-              child: new Text('Login'),
-              onPressed: _loginPressed,
-            ),
-            new FlatButton(
-              child: new Text('Dont have an account? Tap here to register.'),
-              onPressed: _formChange,
-            ),
-            new FlatButton(
-              child: new Text('Forgot Password?'),
-              onPressed: _passwordReset,
-            )
-          ],
-        ),
-      );
-    } else {
-      return new Container(
-        child: new Column(
-          children: <Widget>[
-            new RaisedButton(
-              child: new Text('Create an Account'),
-              onPressed: _createAccountPressed,
-            ),
-            new FlatButton(
-              child: new Text('Have an account? Click here to login.'),
-              onPressed: _formChange,
-            )
-          ],
-        ),
-      );
-    }
-  }
-
-  void _loginPressed() {
-    // AuthService _service = AuthService();
-
-    // _service.login(_email, _password).then((value) => {
-    //   if (value != null)
-    //     {
-    //       Navigator.push(
-    //           context,
-    //           MaterialPageRoute(
-    //               builder: (context) => HomeScreen(email: value.email)))
-    //     }
-    // });
-    // print('The user wants to login with $_email and $_password');
-  }
-
-  void _createAccountPressed() {
-    print('The user wants to create an accoutn with $_email and $_password');
-    // AuthService _authService = AuthService();
-    // _authService.create(_email, _password).then((value) => {
-    //   if (value != null)
-    //     {
-    //       Navigator.push(
-    //           context,
-    //           MaterialPageRoute(
-    //               builder: (context) => HomeScreen(email: value.email)))
-    //     }
-    // });
-  }
-
-  void _passwordReset() {
-    print("The user wants a password reset request sent to $_email");
   }
 }
