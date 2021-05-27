@@ -145,7 +145,7 @@ class _LoginPageState extends State<LoginPage> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          VoiceHome())) //HomeScreen(email: value.email)
+                          HomeScreen(/*email: value.email*/))) //VoiceHome()
             }
         });
     print('The user wants to login with $_email and $_password');
