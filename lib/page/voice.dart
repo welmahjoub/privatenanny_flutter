@@ -1,5 +1,7 @@
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
+import 'package:private_nanny/model/task.dart';
+import 'package:private_nanny/page/task_form.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class VoiceHome extends StatelessWidget {
@@ -87,6 +89,8 @@ class _SpeechScreenState extends State<SpeechScreen> {
           listenFor: Duration(minutes: 1),
           onResult: (val) => setState(() {
             _text = val.recognizedWords;
+            MaterialPageRoute(
+                builder: (context) => TaskFormPage(task: new Task(_text)));
             print(_text);
             if (val.hasConfidenceRating && val.confidence > 0) {
               _confidence = val.confidence;
@@ -97,6 +101,11 @@ class _SpeechScreenState extends State<SpeechScreen> {
     } else {
       setState(() => _isListening = false);
       _speech.stop();
+      print("finish ");
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => TaskFormPage(task: new Task(_text))));
     }
   }
 }

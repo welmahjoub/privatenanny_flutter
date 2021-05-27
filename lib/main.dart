@@ -1,8 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:private_nanny/page/login.dart';
-import 'package:private_nanny/page/passwordForgot_page.dart';
-import 'package:private_nanny/page/voice.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
