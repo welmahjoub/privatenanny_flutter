@@ -2,36 +2,27 @@ import 'dart:async' show Future;
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:private_nanny/model/utilisateur.dart';
 
-Future<Album> fetchAlbum() async {
-  final response = await http.get(
-    Uri.parse('https://jsonplaceholder.typicode.com/albums/1'),
-    // Send authorization headers to the backend.
-    headers: {
-      HttpHeaders.authorizationHeader: 'Basic your_api_token_here',
-    },
-  );
-  final responseJson = jsonDecode(response.body);
+class ServiceBackend{
 
-  return Album.fromJson(responseJson);
-}
 
-class Album {
-  final int userId;
-  final int id;
-  final String title;
+  Future<List<Utilisateur>> getContacts(int id) async{
 
-  Album({
-    this.userId,
-    this.id,
-    this.title,
-  });
-
-  factory Album.fromJson(Map<String, dynamic> json) {
-    return Album(
-      userId: json['userId'],
-      id: json['id'],
-      title: json['title'],
+    final response = await http.get(
+      Uri.parse('https://privatenanny.herokuapp.com/user/'+ id.toString() ),
     );
+    final responseJson = (jsonDecode(response.body)["contacts"] as List).map((data) => Utilisateur.fromJson(data)).toList();
+
+    print(responseJson.toString());
+
+    return responseJson;
+
+
   }
+
 }
+
+
+
+

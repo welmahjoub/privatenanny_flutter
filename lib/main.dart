@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:private_nanny/page/contact.dart';
 import 'package:private_nanny/page/login.dart';
 
 void main() async {
@@ -15,6 +16,6 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false, // deleted debug bar in AppBar Widget
         title: 'private nanny',
         theme: new ThemeData(primarySwatch: Colors.blue),
-        home: LoginPage());
+        home: ContactScreen());
   }
 }
