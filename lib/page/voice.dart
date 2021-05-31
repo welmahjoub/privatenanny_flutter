@@ -89,8 +89,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
           listenFor: Duration(minutes: 1),
           onResult: (val) => setState(() {
             _text = val.recognizedWords;
-            MaterialPageRoute(
-                builder: (context) => TaskFormPage(task: new Task(_text)));
+
             print(_text);
             if (val.hasConfidenceRating && val.confidence > 0) {
               _confidence = val.confidence;
