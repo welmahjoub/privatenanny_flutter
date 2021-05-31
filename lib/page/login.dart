@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:private_nanny/model/utilisateur.dart';
 import 'package:private_nanny/page/passwordForgot_page.dart';
+import 'package:private_nanny/service/serviceBackend.dart';
 
 import 'home.dart';
 import '../service/auth.dart';
@@ -150,13 +152,20 @@ class _LoginPageState extends State<LoginPage> {
   void _createAccountPressed() {
     print('The user wants to create an accoutn with $_email and $_password');
     AuthService _authService = AuthService();
-    _authService.create(_email, _password).then((value) => {
-          if (value != null)
-            {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()))
-            }
-        });
+
+    _authService
+        .create(_email, _password)
+        .then((value) => {if (value != null) login_proxy()});
+  }
+
+  void login_proxy() {
+    ServiceBackend back = ServiceBackend();
+    back
+        .createUser(Utilisateur(_email, _email, "1234567890", _email))
+        .then((value) => print(value.statusCode));
+
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => HomeScreen()));
   }
 
   void _passwordReset() {
