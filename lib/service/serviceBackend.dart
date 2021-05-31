@@ -1,7 +1,6 @@
 import 'dart:async' show Future;
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:http/http.dart' as http;
 
 Future<Album> fetchAlbum() async {

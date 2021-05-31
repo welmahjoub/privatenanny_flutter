@@ -18,6 +18,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   AuthService _authService = AuthService();
 
+  //TextEditingController _textController = TextEditingController();
+  List<String> taskList = ["rendez vous medecin", "faire les courses", "laver le linge", "faire à manger"];
+  List<DateTime> dateList = [DateTime.utc(2021, 05, 27),  DateTime.utc(2021, 05, 27), DateTime.utc(2021, 05, 28), DateTime.utc(2021, 05, 28)];
+
   stt.SpeechToText _speech;
   bool _isListening = false;
   String _text = 'Appuyez sur le bouton et commencez à parler';
@@ -100,20 +104,57 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Icon(_isListening ? Icons.mic : Icons.mic_none),
           ),
         ),
-      body: SingleChildScrollView(
+      body: Column(
         //reverse: true,
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 150.0),
-          child: Text(
-            _text,
-            style: const TextStyle(
-              fontSize: 32.0,
-              color: Colors.black,
-              fontWeight: FontWeight.w400,
+         //crossAxisCount: 2,
+        children: <Widget> [
+            Container(
+                padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 150.0),
+
+                child: ListView.builder(
+                  //scrollDirection: Axis.vertical,
+
+                    shrinkWrap: true,
+                itemCount: dateList.length,
+                itemBuilder: (BuildContext context, index) {
+                  return ListTile(
+                    title: Text(dateList[index].day.toString() + " / " + dateList[index].month.toString() + "  :    " + taskList[index]),
+
+                  );
+                })
+        ),
+          /*Container(
+              color : Colors.pink,
+              padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
+              child: ListView.builder(
+                //scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  itemCount: taskList.length,
+                  itemBuilder: (BuildContext context, index) {
+                    return ListTile(
+
+                      title: Text(taskList[index]),
+
+                    );
+                  })
+          ),*/
+
+          Container(
+            padding: const EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 0.0),
+            child: Text( _text,
+              style: const TextStyle(
+                fontSize: 30.0,
+                //color: Colors.pink,
+                //backgroundColor: Colors.black,
+                fontWeight: FontWeight.w400,
+              ),
             ),
           ),
-        ),
-      ),);
+        ]
+      )
+
+
+      );
   }
 
   void _listen() async {
