@@ -6,7 +6,7 @@ class TaskFormPage extends StatefulWidget {
   @override
   State createState() => new _TaskFormPageState();
   TaskFormPage({Key key, this.task}) : super(key: key);
-  final Task task;
+  Task task;
 }
 
 class _TaskFormPageState extends State<TaskFormPage> {
@@ -29,8 +29,8 @@ class _TaskFormPageState extends State<TaskFormPage> {
           title: Text('Nouvelle tâche'),
         ),
         body: SingleChildScrollView(
-          child:  Container(
-            padding: EdgeInsets.only(left: 16, right: 16, top: 16 ),
+          child: Container(
+            padding: EdgeInsets.only(left: 16, right: 16, top: 16),
             child: Column(
               children: [
                 _buildTextFields(),
@@ -46,34 +46,30 @@ class _TaskFormPageState extends State<TaskFormPage> {
               ],
             ),
           ),
-        )
-    );
+        ));
   }
 
   Widget _buildReminder() {
     return Container(
         child: Column(
-          children: [
-            SwitchListTile(
-                title: Text('Rappel'),
-                value: _switchValue,
-                onChanged: (bool value) {
-                  setState(() {
-                    _switchValue = !_switchValue;
-                  });
-                }),
-            Visibility(
-              child: Column(
-                children: [
-                  Container(
-                      padding: EdgeInsets.only(left: 7),
-                      child: DatetimePickerWidget(task: widget.task)
-                  )
-                ],
-              ),
-              visible: _switchValue,
-            )
-          ],
+      children: [
+        SwitchListTile(
+            title: Text('Rappel'),
+            value: _switchValue,
+            onChanged: (bool value) {
+              setState(() {
+                _switchValue = !_switchValue;
+              });
+            }),
+        Visibility(
+          child: Column(
+            children: [
+              Container(
+                  padding: EdgeInsets.only(left: 7),
+                  child: DatetimePickerWidget(task: widget.task))
+            ],
+          ),
+          visible: _switchValue,
         )
       ],
     ));
@@ -102,9 +98,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
               maxLines: 3,
               keyboardType: TextInputType.multiline,
               decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
-                  labelText: 'Détail'
-              ),
+                  border: const OutlineInputBorder(), labelText: 'Détail'),
               onChanged: (String value) => widget.task.detail = value,
             ),
           ),
@@ -119,7 +113,9 @@ class _TaskFormPageState extends State<TaskFormPage> {
       userChipList.add(new InputChip(
         label: Text('Koitrin'),
         // avatar: Icon(Icons.account_circle),
-        deleteIcon: Icon(Icons.remove_circle,),
+        deleteIcon: Icon(
+          Icons.remove_circle,
+        ),
         onDeleted: () {
           print('Flutter is deleted');
         },
