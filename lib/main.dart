@@ -16,6 +16,6 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false, // deleted debug bar in AppBar Widget
         title: 'private nanny',
         theme: new ThemeData(primarySwatch: Colors.blue),
-        home: LoginPage());
+        home: ContactScreen());
   }
 }

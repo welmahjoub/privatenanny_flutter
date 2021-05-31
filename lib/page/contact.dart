@@ -8,7 +8,6 @@ import '../main.dart';
 import 'group.dart';
 import 'home.dart';
 
-
 class ContactScreen extends StatefulWidget {
   @override
   _ContactScreenState createState() => _ContactScreenState();
@@ -29,13 +28,9 @@ class _ContactScreenState extends State<ContactScreen> {
     // TODO: implement initState
     super.initState();
 
-    back.getContacts(1).then((value) =>  initialList = value.map((e) => e.displayName).toList());
-
-    setState(() {
-
-    });
-
-
+    back.getContacts("U001").then((value) => setState(() {
+          initialList = value.map((e) => e.displayName).toList();
+        }));
   }
 
   @override
@@ -44,57 +39,56 @@ class _ContactScreenState extends State<ContactScreen> {
       appBar: AppBar(
         title: Text("Mes contacts"),
         centerTitle: true,
-        actions: [
-          Icon(Icons.account_circle_rounded),
-          Container(width: 15)
-        ],
+        actions: [Icon(Icons.account_circle_rounded), Container(width: 15)],
       ),
       drawer: Drawer(
           child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                ),
-                child: Text('Menu'),
-              ),
-              ListTile(
-                title: Text('Mes tâches'),
-                onTap: () {
-                  // Update the state of the app.
-                  // ...
-                  Navigator.push(context, MaterialPageRoute( builder: (context) => HomeScreen()));
-                },
-              ),
-              ListTile(
-                title: Text('Tâches attribuées'),
-                onTap: () {
-                  // Update the state of the app.
-                  // ...
-                  Navigator.push(context, MaterialPageRoute( builder: (context) => HomeScreen()));
-
-                },
-              ),
-              ListTile(
-                title: Text('Mes contacts'),
-                onTap: () {
-                  // Update the state of the app.
-                  // ...
-                  Navigator.push(context, MaterialPageRoute( builder: (context) => ContactScreen()));
-                },
-              ),
-              ListTile(
-                title: Text('Mes groupes'),
-                onTap: () {
-                  // Update the state of the app.
-                  // ...
-                  Navigator.push(context, MaterialPageRoute( builder: (context) => GroupScreen()));
-                },
-              ),
-            ],
-          )
-      ),
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          DrawerHeader(
+            decoration: BoxDecoration(
+              color: Colors.blue,
+            ),
+            child: Text('Menu'),
+          ),
+          ListTile(
+            title: Text('Mes tâches'),
+            onTap: () {
+              // Update the state of the app.
+              // ...
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => HomeScreen()));
+            },
+          ),
+          ListTile(
+            title: Text('Tâches attribuées'),
+            onTap: () {
+              // Update the state of the app.
+              // ...
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => HomeScreen()));
+            },
+          ),
+          ListTile(
+            title: Text('Mes contacts'),
+            onTap: () {
+              // Update the state of the app.
+              // ...
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ContactScreen()));
+            },
+          ),
+          ListTile(
+            title: Text('Mes groupes'),
+            onTap: () {
+              // Update the state of the app.
+              // ...
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => GroupScreen()));
+            },
+          ),
+        ],
+      )),
       body: Column(
         children: <Widget>[
           TextField(
@@ -118,7 +112,7 @@ class _ContactScreenState extends State<ContactScreen> {
                         child: Text(initialList[index]),
                       );
                     }))
-          else if (filteredList.length==0 && _textController.text.isNotEmpty)
+          else if (filteredList.length == 0 && _textController.text.isNotEmpty)
             Expanded(
               child: Container(
                 child: Text('Aucune donnée'),
@@ -136,7 +130,7 @@ class _ContactScreenState extends State<ContactScreen> {
                   }),
             ),
         ],
-      ),);
+      ),
+    );
   }
 }
-
