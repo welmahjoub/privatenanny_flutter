@@ -2,7 +2,6 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:private_nanny/model/task.dart';
 import 'package:private_nanny/page/task_form.dart';
-import 'package:private_nanny/service/auth.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'contact.dart';
 import 'group.dart';
@@ -16,8 +15,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  AuthService _authService = AuthService();
-
   //TextEditingController _textController = TextEditingController();
   List<String> taskList = [
     "rendez vous medecin",
@@ -35,7 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
   stt.SpeechToText _speech;
   bool _isListening = false;
   String _text = 'Appuyez sur le bouton et commencez à parler';
-  double _confidence = 1.0;
   var _localeId = '';
 
   @override
@@ -180,11 +176,7 @@ class _HomeScreenState extends State<HomeScreen> {
           listenFor: Duration(minutes: 1),
           onResult: (val) => setState(() {
             _text = val.recognizedWords;
-
             print(_text);
-            if (val.hasConfidenceRating && val.confidence > 0) {
-              _confidence = val.confidence;
-            }
           }),
         );
       }
