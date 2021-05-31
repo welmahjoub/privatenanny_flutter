@@ -1,6 +1,8 @@
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
+import 'package:private_nanny/model/utilisateur.dart';
 import 'package:private_nanny/service/auth.dart';
+import 'package:private_nanny/service/serviceBackend.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import '../main.dart';
 import 'group.dart';
@@ -16,8 +18,25 @@ class _ContactScreenState extends State<ContactScreen> {
   AuthService _authService = AuthService();
 
   TextEditingController _textController = TextEditingController();
-  List<String> initialList = ["Papa", "Maman", "Léa", "Théo"];
+  List<String> initialList = List();
   List<String> filteredList = List();
+  List<Utilisateur> contactList;
+
+  ServiceBackend back = ServiceBackend();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    back.getContacts(1).then((value) =>  initialList = value.map((e) => e.displayName).toList());
+
+    setState(() {
+
+    });
+
+
+  }
 
   @override
   Widget build(BuildContext context) {
