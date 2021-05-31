@@ -6,11 +6,12 @@ class TaskFormPage extends StatefulWidget {
   @override
   State createState() => new _TaskFormPageState();
   TaskFormPage({Key key, this.task}) : super(key: key);
-  final Task task;
+  Task task;
 }
 
 class _TaskFormPageState extends State<TaskFormPage> {
   bool _switchValue = false;
+
   @override
   void initState() {
     super.initState();
@@ -34,7 +35,12 @@ class _TaskFormPageState extends State<TaskFormPage> {
               children: [
                 _buildTextFields(),
                 Divider(
-                  height: 40,
+                  height: 30,
+                  thickness: 1,
+                ),
+                _buildUsers(),
+                Divider(
+                  height: 30,
                 ),
                 _buildReminder()
               ],
@@ -60,7 +66,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
             children: [
               Container(
                   padding: EdgeInsets.only(left: 7),
-                  child: DatetimePickerWidget())
+                  child: DatetimePickerWidget(task: widget.task))
             ],
           ),
           visible: _switchValue,
@@ -78,11 +84,10 @@ class _TaskFormPageState extends State<TaskFormPage> {
               maxLength: 30,
               controller: _titleController,
               decoration: InputDecoration(
+                filled: true,
                 labelText: 'Intitulé',
               ),
-              onChanged: (String value) {
-                widget.task.title = value;
-              },
+              onChanged: (String value) => widget.task.title = value,
             ),
           ),
           Container(
@@ -90,13 +95,54 @@ class _TaskFormPageState extends State<TaskFormPage> {
             child: TextField(
               maxLength: 255,
               controller: _detailController,
-              minLines: 1,
-              maxLines: 5,
+              maxLines: 3,
               keyboardType: TextInputType.multiline,
-              textInputAction: TextInputAction.newline,
-              decoration: InputDecoration(labelText: 'Détail'),
+              decoration: InputDecoration(
+                  border: const OutlineInputBorder(), labelText: 'Détail'),
+              onChanged: (String value) => widget.task.detail = value,
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUsers() {
+    var userChipList = <Widget>[];
+    for (var i = 0; i < 10; i++) {
+      userChipList.add(new InputChip(
+        label: Text('Koitrin'),
+        // avatar: Icon(Icons.account_circle),
+        deleteIcon: Icon(
+          Icons.remove_circle,
+        ),
+        onDeleted: () {
+          print('Flutter is deleted');
+        },
+      ));
+    }
+
+    return Container(
+      child: Column(
+        children: [
+          Container(
+            child: Align(
+              child: Text('Attribué à : '),
+              alignment: Alignment.centerLeft,
+            ),
+          ),
+          Wrap(
+            direction: Axis.horizontal,
+            alignment: WrapAlignment.start,
+            spacing: 5,
+            children: userChipList,
+          ),
+          Container(
+            child: ElevatedButton.icon(
+                onPressed: () {},
+                icon: Icon(Icons.add, size: 18),
+                label: Text('Ajouter un contact')),
+          )
         ],
       ),
     );

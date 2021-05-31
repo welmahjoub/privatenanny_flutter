@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:private_nanny/page/passwordForgot_page.dart';
-import 'package:private_nanny/page/voice.dart';
 
 import 'home.dart';
 import '../service/auth.dart';
@@ -141,11 +140,8 @@ class _LoginPageState extends State<LoginPage> {
     _service.login(_email, _password).then((value) => {
           if (value != null)
             {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          VoiceHome())) //HomeScreen(email: value.email)
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => HomeScreen()))
             }
         });
     print('The user wants to login with $_email and $_password');
@@ -157,8 +153,8 @@ class _LoginPageState extends State<LoginPage> {
     _authService.create(_email, _password).then((value) => {
           if (value != null)
             {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => VoiceHome()))
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => HomeScreen()))
             }
         });
   }

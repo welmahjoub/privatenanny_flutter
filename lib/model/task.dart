@@ -8,5 +8,8 @@ class Task {
   DateTime createdAt;
   bool isValidated;
 
-  Task(this.title);
+  Task(this.title) {
+    if (this.dateTime == null)
+      this.dateTime = DateTime.now();
+  }
 }
