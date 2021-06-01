@@ -1,10 +1,12 @@
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
+import 'package:private_nanny/page/login.dart';
 import 'package:private_nanny/service/auth.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import '../main.dart';
 import 'contact.dart';
 import 'home.dart';
+import 'widgets.dart';
 
 
 class GroupScreen extends StatefulWidget {
@@ -19,65 +21,14 @@ class _GroupScreenState extends State<GroupScreen> {
   List<String> initialList = ["Maison Papa", "Travail", "Maison Maman", "Ecole"];
   List<String> filteredList = List();
 
+  Widgets widgets = Widgets();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Mes groupes"),
-        centerTitle: true,
-        actions: [
-          Icon(Icons.account_circle_rounded),
-          Container(width: 15)
-        ],
-      ),
-      drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                ),
-                child: Text('Menu'),
-              ),
-              ListTile(
-                title: Text('Mes tâches'),
-                onTap: () {
-                  // Update the state of the app.
-                  // ...
-                  Navigator.push(context, MaterialPageRoute( builder: (context) => HomeScreen()));
-                },
-              ),
-              ListTile(
-                title: Text('Tâches attribuées'),
-                onTap: () {
-                  // Update the state of the app.
-                  // ...
-                  Navigator.push(context, MaterialPageRoute( builder: (context) => HomeScreen()));
-
-                },
-              ),
-              ListTile(
-                title: Text('Mes contacts'),
-                onTap: () {
-                  // Update the state of the app.
-                  // ...
-                  Navigator.push(context, MaterialPageRoute( builder: (context) => ContactScreen()));
-                },
-              ),
-              ListTile(
-                title: Text('Mes groupes'),
-                onTap: () {
-                  // Update the state of the app.
-                  // ...
-                  Navigator.push(context, MaterialPageRoute( builder: (context) => GroupScreen()));
-                },
-              ),
-            ],
-          )
-      ),
-
-        body: Column(
+      appBar: widgets.appBar(context, "Groupes"),
+      drawer: widgets.drawer(context, _authService),
+      body: Column(
           children: <Widget>[
             TextField(
               controller: _textController,
@@ -120,5 +71,7 @@ class _GroupScreenState extends State<GroupScreen> {
           ],
         ),);
   }
+
+
 }
 

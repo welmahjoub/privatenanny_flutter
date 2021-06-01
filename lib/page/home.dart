@@ -2,9 +2,12 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:private_nanny/model/task.dart';
 import 'package:private_nanny/page/task_form.dart';
+import 'package:private_nanny/page/widgets.dart';
+import 'package:private_nanny/service/auth.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'contact.dart';
 import 'group.dart';
+import 'login.dart';
 
 class HomeScreen extends StatefulWidget {
   //HomeScreen({Key key, this.email}) : super(key: key);
@@ -16,6 +19,10 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   //TextEditingController _textController = TextEditingController();
+
+  AuthService _authService = AuthService();
+  Widgets widgets = Widgets();
+
   List<String> taskList = [
     "rendez vous medecin",
     "faire les courses",
@@ -43,59 +50,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Accueil"),
-          centerTitle: true,
-          actions: [Icon(Icons.account_circle_rounded), Container(width: 15)],
-        ),
-        drawer: Drawer(
-            child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text('Menu'),
-            ),
-            ListTile(
-              title: Text('Mes tâches'),
-              onTap: () {
-                // Update the state of the app.
-                // ...
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => HomeScreen()));
-              },
-            ),
-            ListTile(
-              title: Text('Tâches attribuées'),
-              onTap: () {
-                // Update the state of the app.
-                // ...
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => HomeScreen()));
-              },
-            ),
-            ListTile(
-              title: Text('Mes contacts'),
-              onTap: () {
-                // Update the state of the app.
-                // ...
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ContactScreen()));
-              },
-            ),
-            ListTile(
-              title: Text('Mes groupes'),
-              onTap: () {
-                // Update the state of the app.
-                // ...
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => GroupScreen()));
-              },
-            ),
-          ],
-        )),
+        appBar: widgets.appBar(context, "Accueil"),
+        drawer: widgets.drawer(context, _authService),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: AvatarGlow(
           animate: _isListening,

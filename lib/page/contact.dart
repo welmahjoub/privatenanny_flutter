@@ -7,6 +7,8 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 import '../main.dart';
 import 'group.dart';
 import 'home.dart';
+import 'login.dart';
+import 'widgets.dart';
 
 class ContactScreen extends StatefulWidget {
   @override
@@ -23,6 +25,8 @@ class _ContactScreenState extends State<ContactScreen> {
 
   ServiceBackend back = ServiceBackend();
 
+  Widgets widgets = Widgets();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -36,59 +40,8 @@ class _ContactScreenState extends State<ContactScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Mes contacts"),
-        centerTitle: true,
-        actions: [Icon(Icons.account_circle_rounded), Container(width: 15)],
-      ),
-      drawer: Drawer(
-          child: ListView(
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-          DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.blue,
-            ),
-            child: Text('Menu'),
-          ),
-          ListTile(
-            title: Text('Mes tâches'),
-            onTap: () {
-              // Update the state of the app.
-              // ...
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()));
-            },
-          ),
-          ListTile(
-            title: Text('Tâches attribuées'),
-            onTap: () {
-              // Update the state of the app.
-              // ...
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()));
-            },
-          ),
-          ListTile(
-            title: Text('Mes contacts'),
-            onTap: () {
-              // Update the state of the app.
-              // ...
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ContactScreen()));
-            },
-          ),
-          ListTile(
-            title: Text('Mes groupes'),
-            onTap: () {
-              // Update the state of the app.
-              // ...
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => GroupScreen()));
-            },
-          ),
-        ],
-      )),
+        appBar: widgets.appBar(context, "Contacts"),
+        drawer: widgets.drawer(context, _authService),
       body: Column(
         children: <Widget>[
           TextField(

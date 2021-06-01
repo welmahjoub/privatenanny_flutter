@@ -19,9 +19,9 @@ class Utilisateur {
         phoneNo = json['phoneNo'];
 
   Map<String, dynamic> toJson() => {
-        'email': email,
-        'pseudo': pseudo,
-        'displayName': displayName,
-        'phoneNo': phoneNo
-      };
+    'email': email,
+    'pseudo': pseudo,
+    'displayName': displayName,
+    'phoneNo': phoneNo
+  };
 }
