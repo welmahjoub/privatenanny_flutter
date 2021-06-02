@@ -5,21 +5,13 @@ import 'package:private_nanny/page/task_form.dart';
 import 'package:private_nanny/page/widgets.dart';
 import 'package:private_nanny/service/auth.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
-import 'contact.dart';
-import 'group.dart';
-import 'login.dart';
 
 class HomeScreen extends StatefulWidget {
-  //HomeScreen({Key key, this.email}) : super(key: key);
-  //final String email;
-
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  //TextEditingController _textController = TextEditingController();
-
   AuthService _authService = AuthService();
   Widgets widgets = Widgets();
 
@@ -66,43 +58,37 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         body: Center(
+            child: SingleChildScrollView(
+                child: Column(children: <Widget>[
+          Container(
+              padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 150.0),
+              child: ListView.builder(
+                  //scrollDirection: Axis.vertical,
 
-        child: SingleChildScrollView(
-            child: Column(
-            children: <Widget>[
-              Container(
-                  padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 150.0),
-                  child: ListView.builder(
-                      //scrollDirection: Axis.vertical,
-
-                      shrinkWrap: true,
-                      itemCount: dateList.length,
-                      itemBuilder: (BuildContext context, index) {
-                        return ListTile(
-                          title: Text(dateList[index].day.toString() +
-                              " / " +
-                              dateList[index].month.toString() +
-                              "  :    " +
-                              taskList[index]),
-                        );
-                      })),
-
-              Container(
-                padding: const EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 0.0),
-                child: Text(
-                  _text,
-                  style: const TextStyle(
-                    fontSize: 30.0,
-                    //color: Colors.pink,
-                    //backgroundColor: Colors.black,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
+                  shrinkWrap: true,
+                  itemCount: dateList.length,
+                  itemBuilder: (BuildContext context, index) {
+                    return ListTile(
+                      title: Text(dateList[index].day.toString() +
+                          " / " +
+                          dateList[index].month.toString() +
+                          "  :    " +
+                          taskList[index]),
+                    );
+                  })),
+          Container(
+            padding: const EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 0.0),
+            child: Text(
+              _text,
+              style: const TextStyle(
+                fontSize: 30.0,
+                //color: Colors.pink,
+                //backgroundColor: Colors.black,
+                fontWeight: FontWeight.w400,
               ),
-            ]))
-        )
-    );
-
+            ),
+          ),
+        ]))));
   }
 
   void _listen() async {

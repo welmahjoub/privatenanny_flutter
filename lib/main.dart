@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:private_nanny/page/contact.dart';
-import 'package:private_nanny/page/login.dart';
+import 'package:private_nanny/page/loginPage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

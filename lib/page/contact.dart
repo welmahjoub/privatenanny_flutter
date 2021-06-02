@@ -1,13 +1,7 @@
-import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:private_nanny/model/utilisateur.dart';
 import 'package:private_nanny/service/auth.dart';
 import 'package:private_nanny/service/serviceBackend.dart';
-import 'package:speech_to_text/speech_to_text.dart' as stt;
-import '../main.dart';
-import 'group.dart';
-import 'home.dart';
-import 'login.dart';
 import 'widgets.dart';
 
 class ContactScreen extends StatefulWidget {
@@ -32,16 +26,18 @@ class _ContactScreenState extends State<ContactScreen> {
     // TODO: implement initState
     super.initState();
 
-    back.getContacts(_authService.auth.currentUser.uid).then((value) => setState(() {
-          initialList = value.map((e) => e.displayName).toList();
-        }));
+    back
+        .getContacts(_authService.auth.currentUser.uid)
+        .then((value) => setState(() {
+              initialList = value.map((e) => e.displayName).toList();
+            }));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: widgets.appBar(context, "Contacts"),
-        drawer: widgets.drawer(context, _authService),
+      appBar: widgets.appBar(context, "Contacts"),
+      drawer: widgets.drawer(context, _authService),
       body: Column(
         children: <Widget>[
           TextField(
