@@ -7,23 +7,11 @@ import 'package:private_nanny/model/utilisateur.dart';
 class UserService {
   static Utilisateur currentUser;
 
-  // Future<List<Utilisateur>> getContacts(String uid) async {
-  //   final response = await http.get(
-  //     Uri.parse('https://privatenanny.herokuapp.com/user/' + uid),
-  //   );
-  //   final responseJson = (jsonDecode(response.body)["contacts"] as List)
-  //       .map((data) => Utilisateur.fromJson(data))
-  //       .toList();
-
-  //   print(responseJson.toString());
-
-  //   return responseJson;
-  // }
-
   void updateCurretUser(String uid) async {
     final response = await http.get(
       Uri.parse('https://privatenanny.herokuapp.com/user/' + uid),
     );
+    print(jsonDecode(response.body).toString());
 
     currentUser = Utilisateur.fromJson(jsonDecode(response.body));
 
@@ -34,10 +22,8 @@ class UserService {
     final groups = (jsonDecode(response.body)["groups"] as List)
         .map((data) => Group.fromJson(data))
         .toList();
-
-    print(currentUser);
-    currentUser.contacts = contacts;
     currentUser.groups = groups;
+    currentUser.contacts = contacts;
   }
 
   Future<http.Response> createUser(Utilisateur user) {
