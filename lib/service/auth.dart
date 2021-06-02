@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:private_nanny/service/UserService.dart';
 import '../model/user.dart';
 
 class AuthService {
@@ -39,5 +40,7 @@ class AuthService {
 
   Future<void> logout() async {
     await FirebaseAuth.instance.signOut();
+
+    UserService.currentUser = null;
   }
 }
