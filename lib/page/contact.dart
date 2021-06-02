@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:private_nanny/model/utilisateur.dart';
 import 'package:private_nanny/service/auth.dart';
-import 'package:private_nanny/service/serviceBackend.dart';
+import 'package:private_nanny/service/UserService.dart';
 import 'widgets.dart';
 
 class ContactScreen extends StatefulWidget {
@@ -17,7 +17,7 @@ class _ContactScreenState extends State<ContactScreen> {
   List<String> filteredList = List();
   List<Utilisateur> contactList;
 
-  ServiceBackend back = ServiceBackend();
+  UserService back = UserService();
 
   Widgets widgets = Widgets();
 
@@ -26,11 +26,16 @@ class _ContactScreenState extends State<ContactScreen> {
     // TODO: implement initState
     super.initState();
 
-    back
-        .getContacts(_authService.auth.currentUser.uid)
-        .then((value) => setState(() {
-              initialList = value.map((e) => e.displayName).toList();
-            }));
+    setState(() {
+      initialList =
+          UserService.currentUser.contacts.map((e) => e.displayName).toList();
+    });
+
+    // back
+    //     .getContacts(_authService.auth.currentUser.uid)
+    //     .then((value) => setState(() {
+    //           initialList = value.map((e) => e.displayName).toList();
+    //         }));
   }
 
   @override

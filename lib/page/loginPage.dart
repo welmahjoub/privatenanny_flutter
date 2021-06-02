@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:private_nanny/page/passwordForgot_page.dart';
 import 'package:private_nanny/page/registerPage.dart';
+import 'package:private_nanny/service/UserService.dart';
 import 'package:private_nanny/service/auth.dart';
 
 import 'home.dart';
@@ -14,6 +15,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  AuthService _service = AuthService();
 
   String _email;
   String _password;
@@ -74,17 +76,17 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _loginPressed() {
-    AuthService _service = AuthService();
-
     _service.login(_email, _password).then((value) => {
-          if (value != null)
-            {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()))
-            }
+          if (value != null) {loginRedirect()}
         });
+  }
 
-    print('The user wants to login with $_email and $_password');
+  void loginRedirect() {
+    UserService service = UserService();
+    service.updateCurretUser(_service.auth.currentUser.uid);
+
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => HomeScreen()));
   }
 
   void _passwordReset() {

@@ -3,7 +3,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:private_nanny/model/utilisateur.dart';
 import 'package:private_nanny/page/loginPage.dart';
 import 'package:private_nanny/service/auth.dart';
-import 'package:private_nanny/service/serviceBackend.dart';
+import 'package:private_nanny/service/UserService.dart';
 import 'home.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -43,7 +43,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _createAccountBackend() {
-    ServiceBackend back = ServiceBackend();
+    UserService back = UserService();
     back
         .createUser(Utilisateur(_email, _email, _phone, _email))
         .then((value) => print(value.statusCode));

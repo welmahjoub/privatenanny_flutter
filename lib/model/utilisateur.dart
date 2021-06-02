@@ -1,3 +1,5 @@
+import 'package:private_nanny/model/group.dart';
+
 class Utilisateur {
   int id;
   String email;
@@ -7,8 +9,8 @@ class Utilisateur {
   List<Utilisateur> contacts;
   String phoneNo;
 
-//List<Task> tasks;
-//List<Group> groups;
+  //List<Task> tasks;
+  List<Group> groups;
 
   Utilisateur(this.email, this.displayName, this.phoneNo, this.pseudo);
 
@@ -20,9 +22,9 @@ class Utilisateur {
         phoneNo = json['phoneNo'];
 
   Map<String, dynamic> toJson() => {
-    'email': email,
-    'pseudo': pseudo,
-    'displayName': displayName,
-    'phoneNo': phoneNo
-  };
+        'email': email,
+        'pseudo': pseudo,
+        'displayName': displayName,
+        'phoneNo': phoneNo
+      };
 }
