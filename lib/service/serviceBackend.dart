@@ -17,6 +17,15 @@ class ServiceBackend {
     return responseJson;
   }
 
+  Future<Utilisateur> getUtilisateur(String id) async {
+    final response = await http.get(
+      Uri.parse('https://privatenanny.herokuapp.com/user/' + id.toString()),
+    );
+    final responseJson = (jsonDecode(response.body));
+
+    return responseJson;
+  }
+
   Future<http.Response> createUser(Utilisateur user) {
     return http.post(
       Uri.parse('https://privatenanny.herokuapp.com/user/'),

@@ -31,9 +31,8 @@ class _ContactScreenState extends State<ContactScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print(_authService.auth.currentUser.uid);
 
-    back.getContacts("U001").then((value) => setState(() {
+    back.getContacts(_authService.auth.currentUser.uid).then((value) => setState(() {
           initialList = value.map((e) => e.displayName).toList();
         }));
   }

@@ -65,9 +65,10 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Icon(_isListening ? Icons.mic : Icons.mic_none),
           ),
         ),
-        body: Column(
-            //reverse: true,
-            //crossAxisCount: 2,
+        body: Center(
+
+        child: SingleChildScrollView(
+            child: Column(
             children: <Widget>[
               Container(
                   padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 150.0),
@@ -85,21 +86,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               taskList[index]),
                         );
                       })),
-              /*Container(
-              color : Colors.pink,
-              padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
-              child: ListView.builder(
-                //scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  itemCount: taskList.length,
-                  itemBuilder: (BuildContext context, index) {
-                    return ListTile(
-
-                      title: Text(taskList[index]),
-
-                    );
-                  })
-          ),*/
 
               Container(
                 padding: const EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 0.0),
@@ -113,7 +99,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-            ]));
+            ]))
+        )
+    );
+
   }
 
   void _listen() async {
