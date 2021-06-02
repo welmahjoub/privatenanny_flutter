@@ -4,6 +4,7 @@ import 'package:private_nanny/model/task.dart';
 import 'package:private_nanny/page/task_form.dart';
 import 'package:private_nanny/page/widgets.dart';
 import 'package:private_nanny/service/auth.dart';
+import 'package:private_nanny/service/utility.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class HomeScreen extends StatefulWidget {
@@ -118,7 +119,8 @@ class _HomeScreenState extends State<HomeScreen> {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => TaskFormPage(task: new Task())));
+              builder: (context) =>
+                  TaskFormPage(task: Utility.splitSpeechText(_text))));
     }
   }
 }

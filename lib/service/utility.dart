@@ -3,7 +3,7 @@ import 'package:private_nanny/model/utilisateur.dart';
 import 'package:private_nanny/service/UserService.dart';
 
 class Utility {
-  Task splitSpeechText(String text) {
+  static Task splitSpeechText(String text) {
     text = text.toLowerCase();
     //String text = "prévient thomas de s'habiller à 17H pour le rugby";
     List<String> textes = text.split(" ");
@@ -21,7 +21,8 @@ class Utility {
     List<Utilisateur> receivers = UserService.currentUser.contacts
         .where((element) => receiversName.contains(element.displayName));
 
-    Task task = Task();
+    Task task = Task.withParam(
+        text, text, new DateTime.now(), UserService.currentUser, receivers);
 
     return task;
   }
