@@ -1,6 +1,7 @@
 class Utilisateur {
   int id;
   String email;
+  String uid;
   String displayName;
   String pseudo;
   List<Utilisateur> contacts;
