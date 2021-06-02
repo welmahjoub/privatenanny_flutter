@@ -21,7 +21,7 @@ class Utility {
     List<Utilisateur> receivers = UserService.currentUser.contacts
         .where((element) => receiversName.contains(element.displayName));
 
-    Task task = Task(text);
+    Task task = Task();
 
     return task;
   }
