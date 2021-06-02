@@ -5,15 +5,18 @@ import 'package:private_nanny/model/task.dart';
 class DatetimePickerWidget extends StatefulWidget {
   @override
   _DatetimePickerWidgetState createState() => _DatetimePickerWidgetState();
-  DatetimePickerWidget({Key key, this.task});
+  DatetimePickerWidget({Key key, this.task, this.formKey});
   Task task;
+  GlobalKey<FormState> formKey;
 }
 
 class _DatetimePickerWidgetState extends State<DatetimePickerWidget> {
   final TextEditingController _textController = new TextEditingController();
+  DateTime _initDate;
   @override
   void initState() {
-    _textController.text = _getText(widget.task.dateTime);
+    _textController.text = _getText(_initDate);
+    _initDate = widget.task.dateTime != null ? widget.task.dateTime : DateTime.now();
   }
 
   String _getText(DateTime dateTime) {
@@ -25,18 +28,27 @@ class _DatetimePickerWidgetState extends State<DatetimePickerWidget> {
   }
 
   @override
-  Widget build(BuildContext context) => TextFormField(
-    controller: _textController,
-    decoration: InputDecoration(
-      filled: true,
-      icon: Icon(Icons.notifications),
-      labelText: 'Date et heure',
-      suffixIcon: Icon(
-        Icons.today,
-      ),
-    ),
-    readOnly: true,
-    onTap: () => pickDateTime(context),
+  Widget build(BuildContext context) => Form(
+      key: widget.formKey,
+      child: TextFormField(
+        controller: _textController,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Il faut la date de rappel';
+          }
+          return null;
+        },
+        decoration: InputDecoration(
+          filled: true,
+          icon: Icon(Icons.notifications),
+          labelText: 'Date et heure',
+          suffixIcon: Icon(
+            Icons.today,
+          ),
+        ),
+        readOnly: true,
+        onTap: () => pickDateTime(context),
+      )
   );
 
   Future pickDateTime(BuildContext context) async {
@@ -62,7 +74,7 @@ class _DatetimePickerWidgetState extends State<DatetimePickerWidget> {
 
     final newDate = await showDatePicker(
       context: context,
-      initialDate: widget.task.dateTime,
+      initialDate: _initDate,
       firstDate: DateTime.now(),
       lastDate: DateTime(DateTime.now().year + 5),
     );
@@ -75,11 +87,17 @@ class _DatetimePickerWidgetState extends State<DatetimePickerWidget> {
   Future<TimeOfDay> pickTime(BuildContext context) async {
     final newTime = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay(hour: widget.task.dateTime.hour, minute: widget.task.dateTime.minute),
+      initialTime: TimeOfDay(hour: _initDate.hour, minute: _initDate.minute),
     );
 
     if (newTime == null) return null;
 
     return newTime;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _textController.dispose();
   }
 }
