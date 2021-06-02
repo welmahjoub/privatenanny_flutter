@@ -118,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => TaskFormPage(task: new Task(_text))));
+              builder: (context) => TaskFormPage(task: new Task())));
     }
   }
 }
