@@ -10,8 +10,8 @@ class Utility {
 
     List<String> Allcontacts =
         UserService.currentUser.contacts.map((e) => e.displayName).toList();
-
-    int date = int.parse(text.replaceAll(new RegExp(r'[^0-9]'), '')); //17
+    String dateString = text.replaceAll(new RegExp(r'[^0-9]'), '');
+    int date = int.parse("17"); //17
 
     //if (text.toLowerCase().contains("moi"))
 
@@ -19,7 +19,8 @@ class Utility {
         textes.where((item) => Allcontacts.contains(item)).toList(); // thomas
 
     List<Utilisateur> receivers = UserService.currentUser.contacts
-        .where((element) => receiversName.contains(element.displayName));
+        .where((element) => receiversName.contains(element.displayName))
+        .toList();
 
     Task task = Task.withParam(
         text, text, new DateTime.now(), UserService.currentUser, receivers);

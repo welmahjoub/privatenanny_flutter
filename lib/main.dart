@@ -14,20 +14,26 @@ class MyApp extends StatelessWidget {
   AuthService auth = AuthService();
   @override
   Widget build(BuildContext context) {
-    if (auth.auth.currentUser != null) {
-      return MaterialApp(
-          debugShowCheckedModeBanner:
-              false, // deleted debug bar in AppBar Widget
-          title: 'private nanny',
-          theme: new ThemeData(primarySwatch: Colors.blue),
-          home: LoginPage());
-    } else {
-      return MaterialApp(
-          debugShowCheckedModeBanner:
-              false, // deleted debug bar in AppBar Widget
-          title: 'private nanny',
-          theme: new ThemeData(primarySwatch: Colors.blue),
-          home: HomeScreen());
-    }
+    return MaterialApp(
+        debugShowCheckedModeBanner: false, // deleted debug bar in AppBar Widget
+        title: 'private nanny',
+        theme: new ThemeData(primarySwatch: Colors.blue),
+        home: LoginPage());
+
+    // if (auth.auth.currentUser != null) {
+    //   return MaterialApp(
+    //       debugShowCheckedModeBanner:
+    //           false, // deleted debug bar in AppBar Widget
+    //       title: 'private nanny',
+    //       theme: new ThemeData(primarySwatch: Colors.blue),
+    //       home: LoginPage());
+    // } else {
+    //   return MaterialApp(
+    //       debugShowCheckedModeBanner:
+    //           false, // deleted debug bar in AppBar Widget
+    //       title: 'private nanny',
+    //       theme: new ThemeData(primarySwatch: Colors.blue),
+    //       home: HomeScreen());
+    // }
   }
 }
