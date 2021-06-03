@@ -1,9 +1,13 @@
 
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:private_nanny/model/task.dart';
 import 'package:private_nanny/model/utilisateur.dart';
+import 'package:private_nanny/page/widgets.dart';
+import 'package:private_nanny/service/UserService.dart';
 import 'package:private_nanny/service/auth.dart';
+import 'package:private_nanny/service/task.dart';
 import 'package:private_nanny/widget/datetime_piker.dart';
 import 'package:private_nanny/widget/popover.dart';
 
@@ -17,13 +21,15 @@ class TaskFormPage extends StatefulWidget {
 class _TaskFormPageState extends State<TaskFormPage> {
   bool _switchValue;
   Repeatition _dropdownValue;
-  final List<Utilisateur> _users = [];
+  List<Utilisateur> _usersSelected;
   final TextEditingController _titleController = new TextEditingController();
   final TextEditingController _detailController = new TextEditingController();
   final _textfieldFormKey = GlobalKey<FormState>();
   final _datetimeFormKey = GlobalKey<FormState>();
-
-  AuthService _authService = AuthService();
+  final Widgets _widgets = Widgets();
+  final AuthService _authService = AuthService();
+  final TaskService _taskService = TaskService();
+  List _filterContactList;
 
   @override
   void dispose() {
@@ -34,15 +40,17 @@ class _TaskFormPageState extends State<TaskFormPage> {
 
   @override
   void initState() {
-
     super.initState();
+
+    _usersSelected = widget.task.receivers != null ? widget.task.receivers : _usersSelected = [];
+    _filterContactList = UserService.currentUser.contacts;
 
     _switchValue = widget.task.dateTime != null;
     _dropdownValue = Task.getFromDuration(widget.task.delayBetweenRepetition);
+
     // initiate receivers
-    for(var i = 0; i < 10; i++) {
-      _users.add(new Utilisateur('koitrin@test.com', 'Koitrin', '09876543', 'Qt-tracker'));
-    }
+    _usersSelected = widget.task.receivers == null ? []
+    : widget.task.receivers;
 
     // initiate text controller
     _titleController.text = widget.task.title;
@@ -51,15 +59,15 @@ class _TaskFormPageState extends State<TaskFormPage> {
     _titleController.addListener(() => widget.task.title = _titleController.text);
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Nouvelle tâche'),
-        ),
+        appBar: _widgets.appBar(context, "Nouvelle tâche"),
+        drawer: _widgets.drawer(context, _authService),
         floatingActionButton: _buildRegisterButton(),
         body: SingleChildScrollView(
-          child:  Container(
+          child: Container(
             padding: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 32),
             child: Column(
               children: [
@@ -100,7 +108,8 @@ class _TaskFormPageState extends State<TaskFormPage> {
                   children: [
                     Container(
                       margin: EdgeInsets.only(bottom: 10),
-                      child: DatetimePickerWidget(task: widget.task, formKey: _datetimeFormKey,),
+                      child: DatetimePickerWidget(
+                        task: widget.task, formKey: _datetimeFormKey,),
                     ),
                     _buildRepeatition()
                   ],
@@ -155,18 +164,21 @@ class _TaskFormPageState extends State<TaskFormPage> {
   }
 
   Widget _buildUsers() {
-    var userChipList = <Widget>[];
+    final userChipList = <Widget>[];
 
-    _users.forEach((element) {
-      userChipList.add(new InputChip(
-        label: Text(element.displayName),
-        deleteIcon: Icon(Icons.remove_circle,),
-        onDeleted: () {
-          setState(() {
-            _users.remove(element);
-          });
-        },
-      ));
+
+
+    _usersSelected?.forEach((element) {
+      userChipList.add(
+          InputChip(
+            label: Text(element.displayName),
+            deleteIcon: Icon(Icons.remove_circle,),
+            onDeleted: () {
+              setState(() {
+                _usersSelected.remove(element);
+              });
+            },
+          ));
     });
 
     return Container(
@@ -192,37 +204,70 @@ class _TaskFormPageState extends State<TaskFormPage> {
                       isScrollControlled: true,
                       context: context,
                       builder: (BuildContext context) {
-                        return Popover(
-                            child: Column(
-                              children: [
-                                Container(
-                                  margin: EdgeInsets.only(bottom: 20),
-                                  child: Text(
-                                    'Ajouter un contact à la tâche',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 20
+                        return StatefulBuilder(builder: (BuildContext context, StateSetter setModalState) {
+                          return Popover(
+                              child: Column(
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.only(bottom: 20),
+                                    child: Text(
+                                      'Ajouter un contact à la tâche',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 20
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 20),
-                                  margin: EdgeInsets.only(bottom: 10),
-                                  child: TextField(
-                                    decoration: InputDecoration(
-                                        filled: true,
-                                        labelText: 'Contact',
-                                        hintText: 'nom ou prénom'
+                                  Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 20),
+                                    margin: EdgeInsets.only(bottom: 10),
+                                    child: TextField(
+                                      onChanged: (value) {
+                                        setModalState(() {
+                                          _filterContactList = UserService.currentUser.contacts.where((user) =>
+                                              user.displayName.toLowerCase().contains(value)
+                                          ).toList();
+                                        });
+                                      },
+                                      decoration: InputDecoration(
+                                          filled: true,
+                                          labelText: 'Contact',
+                                          hintText: 'nom ou prénom'
+                                      ),
                                     ),
                                   ),
-                                ),
-                                ElevatedButton(
-                                    onPressed: () {},
-                                    child: Text('Ajouter')
-                                )
-                              ],
-                            )
-                        );
+                                  Container(
+                                    height: 400,
+                                    child: _filterContactList.length > 0 ?
+                                    ListView.builder(
+                                      itemCount: _filterContactList.length,
+                                      scrollDirection: Axis.vertical,
+                                      itemBuilder: (BuildContext context, int index) {
+                                        return CheckboxListTile(
+                                          title: Text(_filterContactList[index].displayName),
+                                          subtitle: Text(_filterContactList[index].phoneNo),
+                                          onChanged: (value) {
+                                            setState(() {
+                                              if (!_usersSelected.contains(_filterContactList[index]))
+                                                _usersSelected.add(_filterContactList[index]);
+                                              else
+                                                _usersSelected.remove(_filterContactList[index]);
+                                            });
+                                            setModalState(() {
+                                              _usersSelected = _usersSelected;
+                                            });
+                                          },
+                                          value: _usersSelected.contains(_filterContactList[index]),
+                                        );
+                                      },
+                                    ) : Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  ),
+                                ],
+                              )
+                          );
+                        });
                       }
                   );
                 },
@@ -252,10 +297,11 @@ class _TaskFormPageState extends State<TaskFormPage> {
                 _dropdownValue = r;
               });
             },
-            items: Repeatition.values.map((e) => DropdownMenuItem(
-                value: e,
-                child: Text(e.name)
-            )).toList(),
+            items: Repeatition.values.map((e) =>
+                DropdownMenuItem(
+                    value: e,
+                    child: Text(e.name)
+                )).toList(),
           )
         ],
       ),
@@ -265,7 +311,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
   Widget _buildRegisterButton() {
     return FloatingActionButton.extended(
       onPressed: () {
-        if(_textfieldFormKey.currentState.validate()) {
+        if (_textfieldFormKey.currentState.validate()) {
           if (_switchValue) {
             if (_datetimeFormKey.currentState.validate())
               _sendTask();
@@ -281,8 +327,15 @@ class _TaskFormPageState extends State<TaskFormPage> {
   }
 
   void _sendTask() {
-    widget.task.receivers = _users;
-    widget.task.user = new Utilisateur('email', 'displayName', 'phoneNo', 'pseudo');
-    print(widget.task.toJson());
+    // Fixme supprimer
+    widget.task.user = UserService.currentUser;
+
+    widget.task.receivers = _usersSelected;
+    widget.task.repeat = _dropdownValue != Repeatition.no;
+    widget.task.delayBetweenRepetition = _dropdownValue.duration;
+    widget.task.createdAt = DateTime.now();
+    _taskService.createTask(widget.task).then((value) =>
+        print(value.statusCode)).onError((error, stackTrace) => print(error));
   }
+
 }

@@ -16,7 +16,7 @@ class Task {
   Task.withParam(this.title, this.detail, this.dateTime, this.user, this.receivers) {
     this.action = 'NOTIFICATION';
     // Todo ajouter un champ sur l'interface
-    this.repeatitionNumber = 0;
+    this.repeatitionNumber = 1;
     this.delayBetweenRepetition = 0;
     this.isValidated = false;
     this.repeat = false;
@@ -24,7 +24,7 @@ class Task {
 
   Task() {
     // Todo ajouter un champ sur l'interface
-    this.repeatitionNumber = 0;
+    this.repeatitionNumber = 1;
     this.delayBetweenRepetition = 0;
     this.title = '';
     this.detail = '';
@@ -56,7 +56,7 @@ class Task {
   }
 
   Map<String, dynamic>  toJson()  {
-    List<Map<String, dynamic>> auxReceivers = receivers.map((e) => e.toJson()).toList();
+    List<Map<String, dynamic>> auxReceivers = receivers?.map((e) => e.toJson())?.toList();
     return {
       'user': user.toJson(),
       'action': action,
@@ -65,8 +65,8 @@ class Task {
       'repeat': repeat,
       'repeatitionNumber': repeatitionNumber,
       'delayBetweenRepetition': delayBetweenRepetition,
-      'dateTime': dateTime,
-      'createdAt': createdAt,
+      'dateTime': dateTime?.toIso8601String(),
+      'createdAt': createdAt.toIso8601String(),
       'isValidated': isValidated,
       'receivers': auxReceivers
     };
