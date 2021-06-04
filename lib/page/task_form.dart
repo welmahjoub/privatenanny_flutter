@@ -111,7 +111,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
                       child: DatetimePickerWidget(
                         task: widget.task, formKey: _datetimeFormKey,),
                     ),
-                    _buildRepeatition()
+                    _buildRepeatition(context)
                   ],
                 ),
               ),
@@ -224,6 +224,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
                                     child: TextField(
                                       onChanged: (value) {
                                         setModalState(() {
+                                          // Fixme correction du filtre
                                           _filterContactList = UserService.currentUser.contacts.where((user) =>
                                               user.displayName.toLowerCase().contains(value)
                                           ).toList();
@@ -279,7 +280,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
     );
   }
 
-  Widget _buildRepeatition() {
+  Widget _buildRepeatition(BuildContext context) {
     return Container(
       child: Row(
         children: [
@@ -314,9 +315,9 @@ class _TaskFormPageState extends State<TaskFormPage> {
         if (_textfieldFormKey.currentState.validate()) {
           if (_switchValue) {
             if (_datetimeFormKey.currentState.validate())
-              _sendTask();
+              _sendTask(context);
           } else {
-            _sendTask();
+            _sendTask(context);
           }
         }
       },
@@ -326,16 +327,27 @@ class _TaskFormPageState extends State<TaskFormPage> {
     );
   }
 
-  void _sendTask() {
-    // Fixme supprimer
+  void _sendTask(BuildContext context) {
     widget.task.user = UserService.currentUser;
 
     widget.task.receivers = _usersSelected;
     widget.task.repeat = _dropdownValue != Repeatition.no;
     widget.task.delayBetweenRepetition = _dropdownValue.duration;
     widget.task.createdAt = DateTime.now();
-    _taskService.createTask(widget.task).then((value) =>
-        print(value.statusCode)).onError((error, stackTrace) => print(error));
+    _taskService.createTask(widget.task).then((value) {
+      if ([201,202].contains(value.statusCode))
+        ScaffoldMessenger.of(context).showSnackBar(_buildSnackBar('La tâche a été bien créée'));
+      else
+        ScaffoldMessenger.of(context).showSnackBar(_buildSnackBar('Une erreure s\'est produite'));
+    }).onError((error, stackTrace) {
+      ScaffoldMessenger.of(context).showSnackBar(_buildSnackBar('Une erreure s\'est produite'));
+    });
   }
 
+  Widget _buildSnackBar(text) {
+    return SnackBar(
+      behavior: SnackBarBehavior.floating,
+      content: Text(text),
+    );
+  }
 }
