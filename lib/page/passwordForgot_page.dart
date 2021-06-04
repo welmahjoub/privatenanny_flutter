@@ -6,9 +6,8 @@ class ForgotPwd extends StatelessWidget {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: AppBar(
-        title: Text('Enter your email to reset password'),
+        title: Text('Reset password'),
       ),
-
       body: new Center(
         child: new Column(
           //mainAxisAlignment: MainAxisAlignment.center,

@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'user.dart';
+import 'package:private_nanny/service/UserService.dart';
+import '../model/user.dart';
 
-class Service {
+class AuthService {
   final FirebaseAuth auth = FirebaseAuth.instance;
 
   Stream<UserModal> get user {
@@ -24,7 +25,7 @@ class Service {
     }
   }
 
-  Future<UserModal> connecter(email, password) async {
+  Future<UserModal> login(email, password) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
@@ -39,5 +40,7 @@ class Service {
 
   Future<void> logout() async {
     await FirebaseAuth.instance.signOut();
+
+    UserService.currentUser = null;
   }
 }
