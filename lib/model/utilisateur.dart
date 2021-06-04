@@ -17,14 +17,17 @@ class Utilisateur {
   Utilisateur.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         email = json['email'],
+        uid = json['uid'],
         pseudo = json['pseudo'],
         displayName = json['displayName'],
         phoneNo = json['phoneNo'];
 
   Map<String, dynamic> toJson() => {
-        'email': email,
-        'pseudo': pseudo,
-        'displayName': displayName,
-        'phoneNo': phoneNo
-      };
+    'id': id,
+    'uid': uid,
+    'email': email,
+    'pseudo': pseudo,
+    'displayName': displayName,
+    'phoneNo': phoneNo
+  };
 }
