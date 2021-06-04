@@ -9,7 +9,7 @@ class Group {
   Group.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         groupName = json['groupName'],
-        groupOwner = json['groupOwner'],
+        /*groupOwner = json['groupOwner'],*/
         groupMembers = (json['groupMembers'] as List)
             .map((data) => Utilisateur.fromJson(data))
             .toList();
