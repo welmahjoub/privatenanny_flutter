@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:private_nanny/service/UserService.dart';
 import 'package:private_nanny/service/auth.dart';
 import 'widgets.dart';
 
@@ -9,17 +10,30 @@ class GroupScreen extends StatefulWidget {
 
 class _GroupScreenState extends State<GroupScreen> {
   AuthService _authService = AuthService();
+  UserService back = UserService();
 
   TextEditingController _textController = TextEditingController();
-  List<String> initialList = [
-    "Maison Papa",
-    "Travail",
-    "Maison Maman",
-    "Ecole"
-  ];
+  List<String> initialList = List();
   List<String> filteredList = List();
 
   Widgets widgets = Widgets();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    setState(() {
+      initialList =
+          UserService.currentUser.groups.map((e) => e.groupName).toList();
+    });
+
+    // back
+    //     .getContacts(_authService.auth.currentUser.uid)
+    //     .then((value) => setState(() {
+    //           initialList = value.map((e) => e.displayName).toList();
+    //         }));
+  }
 
   @override
   Widget build(BuildContext context) {
