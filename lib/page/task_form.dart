@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:private_nanny/model/task.dart';
 import 'package:private_nanny/model/utilisateur.dart';
+import 'package:private_nanny/page/home.dart';
 import 'package:private_nanny/page/widgets.dart';
 import 'package:private_nanny/service/UserService.dart';
 import 'package:private_nanny/service/auth.dart';
@@ -334,14 +335,24 @@ class _TaskFormPageState extends State<TaskFormPage> {
     widget.task.repeat = _dropdownValue != Repeatition.no;
     widget.task.delayBetweenRepetition = _dropdownValue.duration;
     widget.task.createdAt = DateTime.now();
+    print(widget.task.toJson().toString());
     _taskService.createTask(widget.task).then((value) {
-      if ([201,202].contains(value.statusCode))
-        ScaffoldMessenger.of(context).showSnackBar(_buildSnackBar('La tâche a été bien créée'));
+      if ([201,202].contains(value.statusCode)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            _buildSnackBar('La tâche a été bien créée'));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    HomeScreen()));
+      }
       else
         ScaffoldMessenger.of(context).showSnackBar(_buildSnackBar('Une erreure s\'est produite'));
     }).onError((error, stackTrace) {
       ScaffoldMessenger.of(context).showSnackBar(_buildSnackBar('Une erreure s\'est produite'));
     });
+
+
   }
 
   Widget _buildSnackBar(text) {
