@@ -81,9 +81,9 @@ class _LoginPageState extends State<LoginPage> {
         });
   }
 
-  void loginRedirect() {
+  Future<void> loginRedirect() async {
     UserService service = UserService();
-    service.updateCurretUser(_service.auth.currentUser.uid);
+    await service.updateCurretUser(_service.auth.currentUser.uid);
 
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => HomeScreen()));

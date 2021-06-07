@@ -1,17 +1,34 @@
 import 'package:private_nanny/model/utilisateur.dart';
 
 class Task {
-  Utilisateur user;
-  String action;
+  int id;
   String detail;
   String title;
   List<Utilisateur> receivers;
+  String action;
   bool repeat;
   int repeatitionNumber;
+  DateTime createdAt;
+  DateTime validatedAt;
+  bool isValidated;
   int delayBetweenRepetition;
   DateTime dateTime;
-  DateTime createdAt;
-  bool isValidated;
+
+  Utilisateur user;
+
+  Task.fromJson(Map<String, dynamic> json)
+      : id = json['id'],
+        detail = json['detail'],
+        title = json['title'],
+        receivers = (json['receivers'] as List).map((data) => Utilisateur.fromJson(data)).toList(),
+        action = json['action'],
+        repeat = json['repeat'],
+        repeatitionNumber = json['repeatitionNumber'],
+        createdAt = ((json['createdAt']) != null ? DateTime?.tryParse(json['createdAt']) : null),
+        validatedAt = ((json['validatedAt']) != null ? DateTime?.tryParse(json['validatedAt']) : null),
+        isValidated = json['isValidated'],
+        delayBetweenRepetition = json['delayBetweenRepetition'],
+        dateTime = ((json['dateTime']) != null ? DateTime?.tryParse(json['dateTime']) : null);
 
   Task.withParam(this.title, this.detail, this.dateTime, this.user, this.receivers) {
     this.action = 'NOTIFICATION';

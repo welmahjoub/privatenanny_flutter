@@ -2,12 +2,13 @@ import 'dart:async' show Future;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:private_nanny/model/group.dart';
+import 'package:private_nanny/model/task.dart';
 import 'package:private_nanny/model/utilisateur.dart';
 
 class UserService {
   static Utilisateur currentUser;
 
-  void updateCurretUser(String uid) async {
+  Future<http.Response> updateCurretUser(String uid) async {
     final response = await http.get(
       Uri.parse('https://privatenanny.herokuapp.com/user/' + uid),
     );
@@ -22,8 +23,16 @@ class UserService {
     final groups = (jsonDecode(response.body)["groups"] as List)
         .map((data) => Group.fromJson(data))
         .toList();
+
+    final tasks = (jsonDecode(response.body)["taskList"] as List)
+        .map((data) => Task.fromJson(data))
+        .toList();
+
     currentUser.groups = groups;
     currentUser.contacts = contacts;
+    currentUser.tasks = tasks;
+
+    return response;
   }
 
   Future<http.Response> createUser(Utilisateur user) {

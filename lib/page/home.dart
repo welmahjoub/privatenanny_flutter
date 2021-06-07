@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:private_nanny/model/task.dart';
 import 'package:private_nanny/page/task_form.dart';
 import 'package:private_nanny/page/widgets.dart';
+import 'package:private_nanny/service/UserService.dart';
 import 'package:private_nanny/service/auth.dart';
 import 'package:private_nanny/service/utility.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
@@ -14,20 +15,10 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   AuthService _authService = AuthService();
+  UserService back = UserService();
   Widgets widgets = Widgets();
 
-  List<String> taskList = [
-    "rendez vous medecin",
-    "faire les courses",
-    "laver le linge",
-    "faire à manger"
-  ];
-  List<DateTime> dateList = [
-    DateTime.utc(2021, 05, 27),
-    DateTime.utc(2021, 05, 27),
-    DateTime.utc(2021, 05, 28),
-    DateTime.utc(2021, 05, 28)
-  ];
+  List<Task> userTasks = List();
 
   stt.SpeechToText _speech;
   bool _isListening = false;
@@ -38,6 +29,10 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _speech = stt.SpeechToText();
+
+    setState(() {
+      userTasks = UserService.currentUser.tasks;
+    });
   }
 
   @override
@@ -48,7 +43,9 @@ class _HomeScreenState extends State<HomeScreen> {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: AvatarGlow(
           animate: _isListening,
-          glowColor: Theme.of(context).primaryColor,
+          glowColor: Theme
+              .of(context)
+              .primaryColor,
           endRadius: 75.0,
           duration: const Duration(milliseconds: 2000),
           repeatPauseDuration: const Duration(milliseconds: 100),
@@ -58,38 +55,49 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Icon(_isListening ? Icons.mic : Icons.mic_none),
           ),
         ),
-        body: Center(
-            child: SingleChildScrollView(
+        body: SingleChildScrollView(
                 child: Column(children: <Widget>[
-          Container(
-              padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 150.0),
-              child: ListView.builder(
-                  //scrollDirection: Axis.vertical,
-
-                  shrinkWrap: true,
-                  itemCount: dateList.length,
-                  itemBuilder: (BuildContext context, index) {
-                    return ListTile(
-                      title: Text(dateList[index].day.toString() +
-                          " / " +
-                          dateList[index].month.toString() +
-                          "  :    " +
-                          taskList[index]),
-                    );
-                  })),
-          Container(
-            padding: const EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 0.0),
-            child: Text(
-              _text,
-              style: const TextStyle(
-                fontSize: 30.0,
-                //color: Colors.pink,
-                //backgroundColor: Colors.black,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ),
-        ]))));
+                  Container(
+                      //color: Colors.amber[600],
+                      padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 150.0),
+                      child: ListView.builder(
+                        //scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: userTasks.length,
+                          itemBuilder: (BuildContext context, index) {
+                            return Card(
+                                child: ListTile(
+                                  leading: Text(userTasks[index].dateTime.day.toString() +
+                                      " / " +
+                                      userTasks[index].dateTime.month.toString(),),
+                                  title: Text("  :    " + userTasks[index].title ),
+                                  onTap: () => displayTask(userTasks[index]),
+                                  trailing: IconButton(
+                                          color: Colors.blue,
+                                          icon: userTasks[index].isValidated ? Icon(Icons.check_circle_rounded) : Icon(Icons.check_circle_outline),
+                                          onPressed: () {
+                                            setState(() {
+                                              userTasks[index].isValidated = !userTasks[index].isValidated;
+                                            });
+                                          }),
+                                  ),
+                                );
+                          })
+                  ),
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 0.0),
+                    child: Text(
+                      _text,
+                      style: const TextStyle(
+                        fontSize: 30.0,
+                        //backgroundColor: Colors.black,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                ])
+      )
+    );
   }
 
   void _listen() async {
@@ -106,10 +114,11 @@ class _HomeScreenState extends State<HomeScreen> {
         _speech.listen(
           localeId: _localeId,
           listenFor: Duration(minutes: 1),
-          onResult: (val) => setState(() {
-            _text = val.recognizedWords;
-            print(_text);
-          }),
+          onResult: (val) =>
+              setState(() {
+                _text = val.recognizedWords;
+                print(_text);
+              }),
         );
       }
     } else {
@@ -122,5 +131,9 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (context) =>
                   TaskFormPage(task: Utility.splitSpeechText(_text))));
     }
+  }
+
+  displayTask(Task task) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => TaskFormPage(task:task)));
   }
 }

@@ -42,25 +42,46 @@ class _GroupScreenState extends State<GroupScreen> {
       drawer: widgets.drawer(context, _authService),
       body: Column(
         children: <Widget>[
-          TextField(
-            controller: _textController,
-            onChanged: (text) {
-              text = text.toLowerCase();
-              setState(() {
-                filteredList = initialList
-                    .where((element) => element.toLowerCase().contains(text))
-                    .toList();
-              });
-            },
+          Container(
+            padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
+            child: TextField(
+              decoration: new InputDecoration(
+                  suffixIcon: Icon(Icons.search),
+                  enabledBorder: new OutlineInputBorder(
+                    borderRadius: const BorderRadius.all(
+                      const Radius.circular(20.0),
+                    ),
+                    borderSide: BorderSide(
+                        color: Colors.blue,
+                        width: 2
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white, width: 32.0),
+                      borderRadius: BorderRadius.circular(25.0)
+                  ),
+                  filled: true,
+                  hintStyle: new TextStyle(color: Colors.grey[800]),
+                  //hintText: "Rechercher un contact",
+                  fillColor: Colors.white70),
+              controller: _textController,
+              onChanged: (text) {
+                text = text.toLowerCase();
+                setState(() {
+                  filteredList = initialList
+                      .where((element) => element.toLowerCase().contains(text))
+                      .toList();
+                });
+              },
+            ),
           ),
           if (filteredList.length == 0 && _textController.text.isEmpty)
             Expanded(
                 child: ListView.builder(
                     itemCount: initialList.length,
                     itemBuilder: (BuildContext context, index) {
-                      return Container(
-                        height: 50,
-                        child: Text(initialList[index]),
+                      return ListTile(
+                        title: Text(initialList[index]),
                       );
                     }))
           else if (filteredList.length == 0 && _textController.text.isNotEmpty)

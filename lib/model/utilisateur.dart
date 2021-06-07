@@ -1,4 +1,5 @@
 import 'package:private_nanny/model/group.dart';
+import 'package:private_nanny/model/task.dart';
 
 class Utilisateur {
   int id;
@@ -8,8 +9,8 @@ class Utilisateur {
   String pseudo;
   List<Utilisateur> contacts;
   String phoneNo;
-
-  //List<Task> tasks;
+ 
+  List<Task> tasks;
   List<Group> groups;
 
   Utilisateur(this.email, this.displayName, this.phoneNo, this.pseudo);
