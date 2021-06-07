@@ -126,13 +126,20 @@ class _HomeScreenState extends State<HomeScreen> {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) =>
-                  TaskFormPage(task: Utility.splitSpeechText(_text))));
+              builder: (context) => TaskFormPage(
+                    task: Utility.splitSpeechText(_text),
+                    editable: true,
+                  )));
     }
   }
 
   displayTask(Task task) {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => TaskFormPage(task: task)));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => TaskFormPage(
+                  task: task,
+                  editable: false,
+                )));
   }
 }
