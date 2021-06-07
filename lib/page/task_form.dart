@@ -15,11 +15,13 @@ import 'package:private_nanny/widget/popover.dart';
 class TaskFormPage extends StatefulWidget {
   @override
   State createState() => new _TaskFormPageState();
-  TaskFormPage({Key key, this.task}) : super(key: key);
+  TaskFormPage({Key key, this.task, this.editable}) : super(key: key);
+  bool editable;
   Task task;
 }
 
 class _TaskFormPageState extends State<TaskFormPage> {
+  DateTime _dateTime;
   bool _switchValue;
   Repeatition _dropdownValue;
   List<Utilisateur> _usersSelected;
@@ -48,6 +50,8 @@ class _TaskFormPageState extends State<TaskFormPage> {
 
     _switchValue = widget.task.dateTime != null;
     _dropdownValue = Task.getFromDuration(widget.task.delayBetweenRepetition);
+
+    _dateTime = widget.task.dateTime;
 
     // initiate receivers
     _usersSelected = widget.task.receivers == null ? []
@@ -110,7 +114,9 @@ class _TaskFormPageState extends State<TaskFormPage> {
                     Container(
                       margin: EdgeInsets.only(bottom: 10),
                       child: DatetimePickerWidget(
-                        task: widget.task, formKey: _datetimeFormKey,),
+                          task: widget.task,
+                          formKey: _datetimeFormKey
+                      ),
                     ),
                     _buildRepeatition(context)
                   ],
@@ -131,6 +137,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
             children: [
               Container(
                 child: TextFormField(
+                  readOnly: !widget.editable,
                   maxLength: 30,
                   controller: _titleController,
                   validator: (value) {
@@ -148,6 +155,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
               Container(
                 margin: EdgeInsets.only(top: 6),
                 child: TextField(
+                  readOnly: !widget.editable,
                   maxLength: 255,
                   controller: _detailController,
                   maxLines: 3,
@@ -174,11 +182,11 @@ class _TaskFormPageState extends State<TaskFormPage> {
           InputChip(
             label: Text(element.displayName),
             deleteIcon: Icon(Icons.remove_circle,),
-            onDeleted: () {
+            onDeleted: widget.editable ? () {
               setState(() {
                 _usersSelected.remove(element);
               });
-            },
+            } : null,
           ));
     });
 
@@ -197,85 +205,88 @@ class _TaskFormPageState extends State<TaskFormPage> {
             spacing: 5,
             children: userChipList,
           ),
-          Container(
-            child: ElevatedButton.icon(
-                onPressed: () {
-                  showModalBottomSheet(
-                      backgroundColor: Colors.transparent,
-                      isScrollControlled: true,
-                      context: context,
-                      builder: (BuildContext context) {
-                        return StatefulBuilder(builder: (BuildContext context, StateSetter setModalState) {
-                          return Popover(
-                              child: Column(
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.only(bottom: 20),
-                                    child: Text(
-                                      'Ajouter un contact à la tâche',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 20
+          Visibility(
+            child:  Container(
+              child: ElevatedButton.icon(
+                  onPressed: () {
+                    showModalBottomSheet(
+                        backgroundColor: Colors.transparent,
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (BuildContext context) {
+                          return StatefulBuilder(builder: (BuildContext context, StateSetter setModalState) {
+                            return Popover(
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      margin: EdgeInsets.only(bottom: 20),
+                                      child: Text(
+                                        'Ajouter un contact à la tâche',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 20
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 20),
-                                    margin: EdgeInsets.only(bottom: 10),
-                                    child: TextField(
-                                      onChanged: (value) {
-                                        setModalState(() {
-                                          // Fixme correction du filtre
-                                          _filterContactList = UserService.currentUser.contacts.where((user) =>
-                                              user.displayName.toLowerCase().contains(value)
-                                          ).toList();
-                                        });
-                                      },
-                                      decoration: InputDecoration(
-                                          filled: true,
-                                          labelText: 'Contact',
-                                          hintText: 'nom ou prénom'
+                                    Container(
+                                      padding: EdgeInsets.symmetric(horizontal: 20),
+                                      margin: EdgeInsets.only(bottom: 10),
+                                      child: TextField(
+                                        onChanged: (value) {
+                                          setModalState(() {
+                                            // Fixme correction du filtre
+                                            _filterContactList = UserService.currentUser.contacts.where((user) =>
+                                                user.displayName.toLowerCase().contains(value)
+                                            ).toList();
+                                          });
+                                        },
+                                        decoration: InputDecoration(
+                                            filled: true,
+                                            labelText: 'Contact',
+                                            hintText: 'nom ou prénom'
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Container(
-                                    height: 400,
-                                    child: _filterContactList.length > 0 ?
-                                    ListView.builder(
-                                      itemCount: _filterContactList.length,
-                                      scrollDirection: Axis.vertical,
-                                      itemBuilder: (BuildContext context, int index) {
-                                        return CheckboxListTile(
-                                          title: Text(_filterContactList[index].displayName),
-                                          subtitle: Text(_filterContactList[index].phoneNo),
-                                          onChanged: (value) {
-                                            setState(() {
-                                              if (!_usersSelected.contains(_filterContactList[index]))
-                                                _usersSelected.add(_filterContactList[index]);
-                                              else
-                                                _usersSelected.remove(_filterContactList[index]);
-                                            });
-                                            setModalState(() {
-                                              _usersSelected = _usersSelected;
-                                            });
-                                          },
-                                          value: _usersSelected.contains(_filterContactList[index]),
-                                        );
-                                      },
-                                    ) : Center(
-                                      child: CircularProgressIndicator(),
+                                    Container(
+                                      height: 400,
+                                      child: _filterContactList.length > 0 ?
+                                      ListView.builder(
+                                        itemCount: _filterContactList.length,
+                                        scrollDirection: Axis.vertical,
+                                        itemBuilder: (BuildContext context, int index) {
+                                          return CheckboxListTile(
+                                            title: Text(_filterContactList[index].displayName),
+                                            subtitle: Text(_filterContactList[index].phoneNo),
+                                            onChanged: (value) {
+                                              setState(() {
+                                                if (!_usersSelected.contains(_filterContactList[index]))
+                                                  _usersSelected.add(_filterContactList[index]);
+                                                else
+                                                  _usersSelected.remove(_filterContactList[index]);
+                                              });
+                                              setModalState(() {
+                                                _usersSelected = _usersSelected;
+                                              });
+                                            },
+                                            value: _usersSelected.contains(_filterContactList[index]),
+                                          );
+                                        },
+                                      ) : Center(
+                                        child: CircularProgressIndicator(),
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              )
-                          );
-                        });
-                      }
-                  );
-                },
-                icon: Icon(Icons.add, size: 18),
-                label: Text('Ajouter un contact')),
-          )
+                                  ],
+                                )
+                            );
+                          });
+                        }
+                    );
+                  },
+                  icon: Icon(Icons.add, size: 18),
+                  label: Text('Ajouter un contact')),
+            ),
+            visible: widget.editable,
+          ),
         ],
       ),
     );
@@ -329,30 +340,51 @@ class _TaskFormPageState extends State<TaskFormPage> {
   }
 
   void _sendTask(BuildContext context) {
-    widget.task.user = UserService.currentUser;
+    if (widget.editable) {
 
-    widget.task.receivers = _usersSelected;
-    widget.task.repeat = _dropdownValue != Repeatition.no;
-    widget.task.delayBetweenRepetition = _dropdownValue.duration;
-    widget.task.createdAt = DateTime.now();
-    print(widget.task.toJson().toString());
-    _taskService.createTask(widget.task).then((value) {
-      if ([201,202].contains(value.statusCode)) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            _buildSnackBar('La tâche a été bien créée'));
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    HomeScreen()));
-      }
-      else
+      widget.task.user = UserService.currentUser;
+
+      widget.task.receivers = _usersSelected;
+      widget.task.repeat = _dropdownValue != Repeatition.no;
+      widget.task.delayBetweenRepetition = _dropdownValue.duration;
+      widget.task.createdAt = DateTime.now();
+      print(widget.task.toJson().toString());
+      _taskService.createTask(widget.task).then((value) {
+        if ([201,202,200].contains(value.statusCode)) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              _buildSnackBar('La tâche a été bien créée'));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      HomeScreen()));
+        }
+        else
+          ScaffoldMessenger.of(context).showSnackBar(_buildSnackBar('Une erreure s\'est produite'));
+      }).onError((error, stackTrace) {
         ScaffoldMessenger.of(context).showSnackBar(_buildSnackBar('Une erreure s\'est produite'));
-    }).onError((error, stackTrace) {
-      ScaffoldMessenger.of(context).showSnackBar(_buildSnackBar('Une erreure s\'est produite'));
-    });
-
-
+      });
+    } else {
+      print(widget.task.dateTime);
+      if (_dateTime.isAtSameMomentAs(widget.task.dateTime)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            _buildSnackBar('Aucune modification identifiée'));
+      } else {
+        print(widget.task);
+        _taskService.updateTask(widget.task)
+            .then((value) {
+          if ([201,202,200].contains(value.statusCode)) {
+            ScaffoldMessenger.of(context).showSnackBar(
+                _buildSnackBar('La tâche a été bien modifiée'));
+          }
+          else
+            ScaffoldMessenger.of(context).showSnackBar(_buildSnackBar('Une erreure s\'est produite'));
+        })
+            .onError((error, stackTrace) {
+          ScaffoldMessenger.of(context).showSnackBar(_buildSnackBar('Une erreure s\'est produite'));
+        });
+      }
+    }
   }
 
   Widget _buildSnackBar(text) {

@@ -15,15 +15,15 @@ class _DatetimePickerWidgetState extends State<DatetimePickerWidget> {
   DateTime _initDate;
   @override
   void initState() {
-    _textController.text = _getText(_initDate);
     _initDate = widget.task.dateTime != null ? widget.task.dateTime : DateTime.now();
+    _textController.text = _getText(_initDate);
   }
 
   String _getText(DateTime dateTime) {
     if (dateTime == null) {
       return '';
     } else {
-      return DateFormat('MM/dd/yyyy HH:mm').format(dateTime);
+      return DateFormat('dd/MM/yyyy HH:mm').format(dateTime);
     }
   }
 
