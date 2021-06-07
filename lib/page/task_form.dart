@@ -95,30 +95,25 @@ class _TaskFormPageState extends State<TaskFormPage> {
   Widget _buildReminder() {
     return Container(
         child: Column(
-          children: [
-            SwitchListTile(
-                title: Text('Rappel'),
-                value: _switchValue,
-                onChanged: (bool value) {
-                  setState(() {
-                    _switchValue = !_switchValue;
-                  });
-                }),
-            Visibility(
-              visible: _switchValue,
-              child: Container(
-                padding: EdgeInsets.only(left: 7),
-                child: Column(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(bottom: 10),
-                      child: DatetimePickerWidget(
-                          task: widget.task,
-                          formKey: _datetimeFormKey
-                      ),
-                    ),
-                    _buildRepeatition(context)
-                  ],
+      children: [
+        SwitchListTile(
+            title: Text('Rappel'),
+            value: _switchValue,
+            onChanged: (bool value) {
+              setState(() {
+                _switchValue = !_switchValue;
+              });
+            }),
+        Visibility(
+          visible: _switchValue,
+          child: Container(
+            padding: EdgeInsets.only(left: 7),
+            child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.only(bottom: 10),
+                  child: DatetimePickerWidget(
+                      task: widget.task, formKey: _datetimeFormKey),
                 ),
                 _buildRepeatition(context)
               ],
@@ -131,47 +126,31 @@ class _TaskFormPageState extends State<TaskFormPage> {
 
   Widget _buildTextFields() {
     return Container(
-        child:
-        Form(
-          key: _textfieldFormKey,
-          child: Column(
-            children: [
-              Container(
-                child: TextFormField(
-                  readOnly: !widget.editable,
-                  maxLength: 30,
-                  controller: _titleController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Il faut au moins l\'intitulé';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    filled: true,
-                    labelText: 'Intitulé',
-                  ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(top: 6),
-                child: TextField(
-                  readOnly: !widget.editable,
-                  maxLength: 255,
-                  controller: _detailController,
-                  maxLines: 3,
-                  keyboardType: TextInputType.multiline,
-                  decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
-                      labelText: 'Détail'
-                  ),
-                ),
+        child: Form(
+      key: _textfieldFormKey,
+      child: Column(
+        children: [
+          Container(
+            child: TextFormField(
+              readOnly: !widget.editable,
+              maxLength: 30,
+              controller: _titleController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Il faut au moins l\'intitulé';
+                }
+                return null;
+              },
+              decoration: InputDecoration(
+                filled: true,
+                labelText: 'Intitulé',
               ),
             ),
           ),
           Container(
             margin: EdgeInsets.only(top: 6),
             child: TextField(
+              readOnly: !widget.editable,
               maxLength: 255,
               controller: _detailController,
               maxLines: 3,
@@ -189,16 +168,19 @@ class _TaskFormPageState extends State<TaskFormPage> {
     final userChipList = <Widget>[];
 
     _usersSelected?.forEach((element) {
-      userChipList.add(
-          InputChip(
-            label: Text(element.displayName),
-            deleteIcon: Icon(Icons.remove_circle,),
-            onDeleted: widget.editable ? () {
-              setState(() {
-                _usersSelected.remove(element);
-              });
-            } : null,
-          ));
+      userChipList.add(InputChip(
+        label: Text(element.displayName),
+        deleteIcon: Icon(
+          Icons.remove_circle,
+        ),
+        onDeleted: widget.editable
+            ? () {
+                setState(() {
+                  _usersSelected.remove(element);
+                });
+              }
+            : null,
+      ));
     });
 
     return Container(
@@ -217,7 +199,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
             children: userChipList,
           ),
           Visibility(
-            child:  Container(
+            child: Container(
               child: ElevatedButton.icon(
                   onPressed: () {
                     showModalBottomSheet(
@@ -225,73 +207,87 @@ class _TaskFormPageState extends State<TaskFormPage> {
                         isScrollControlled: true,
                         context: context,
                         builder: (BuildContext context) {
-                          return StatefulBuilder(builder: (BuildContext context, StateSetter setModalState) {
+                          return StatefulBuilder(builder: (BuildContext context,
+                              StateSetter setModalState) {
                             return Popover(
                                 child: Column(
-                                  children: [
-                                    Container(
-                                      margin: EdgeInsets.only(bottom: 20),
-                                      child: Text(
-                                        'Ajouter un contact à la tâche',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 20
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(bottom: 20),
+                                  child: Text(
+                                    'Ajouter un contact à la tâche',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 20),
+                                  ),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 20),
+                                  margin: EdgeInsets.only(bottom: 10),
+                                  child: TextField(
+                                    onChanged: (value) {
+                                      setModalState(() {
+                                        // Fixme correction du filtre
+                                        _filterContactList = UserService
+                                            .currentUser.contacts
+                                            .where((user) => user.displayName
+                                                .toLowerCase()
+                                                .contains(value))
+                                            .toList();
+                                      });
+                                    },
+                                    decoration: InputDecoration(
+                                        filled: true,
+                                        labelText: 'Contact',
+                                        hintText: 'nom ou prénom'),
+                                  ),
+                                ),
+                                Container(
+                                  height: 400,
+                                  child: _filterContactList.length > 0
+                                      ? ListView.builder(
+                                          itemCount: _filterContactList.length,
+                                          scrollDirection: Axis.vertical,
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            return CheckboxListTile(
+                                              title: Text(
+                                                  _filterContactList[index]
+                                                      .displayName),
+                                              subtitle: Text(
+                                                  _filterContactList[index]
+                                                      .phoneNo),
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  if (!_usersSelected.contains(
+                                                      _filterContactList[
+                                                          index]))
+                                                    _usersSelected.add(
+                                                        _filterContactList[
+                                                            index]);
+                                                  else
+                                                    _usersSelected.remove(
+                                                        _filterContactList[
+                                                            index]);
+                                                });
+                                                setModalState(() {
+                                                  _usersSelected =
+                                                      _usersSelected;
+                                                });
+                                              },
+                                              value: _usersSelected.contains(
+                                                  _filterContactList[index]),
+                                            );
+                                          },
+                                        )
+                                      : Center(
+                                          child: CircularProgressIndicator(),
                                         ),
-                                      ),
-                                    ),
-                                    Container(
-                                      padding: EdgeInsets.symmetric(horizontal: 20),
-                                      margin: EdgeInsets.only(bottom: 10),
-                                      child: TextField(
-                                        onChanged: (value) {
-                                          setModalState(() {
-                                            // Fixme correction du filtre
-                                            _filterContactList = UserService.currentUser.contacts.where((user) =>
-                                                user.displayName.toLowerCase().contains(value)
-                                            ).toList();
-                                          });
-                                        },
-                                        decoration: InputDecoration(
-                                            filled: true,
-                                            labelText: 'Contact',
-                                            hintText: 'nom ou prénom'
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      height: 400,
-                                      child: _filterContactList.length > 0 ?
-                                      ListView.builder(
-                                        itemCount: _filterContactList.length,
-                                        scrollDirection: Axis.vertical,
-                                        itemBuilder: (BuildContext context, int index) {
-                                          return CheckboxListTile(
-                                            title: Text(_filterContactList[index].displayName),
-                                            subtitle: Text(_filterContactList[index].phoneNo),
-                                            onChanged: (value) {
-                                              setState(() {
-                                                if (!_usersSelected.contains(_filterContactList[index]))
-                                                  _usersSelected.add(_filterContactList[index]);
-                                                else
-                                                  _usersSelected.remove(_filterContactList[index]);
-                                              });
-                                              setModalState(() {
-                                                _usersSelected = _usersSelected;
-                                              });
-                                            },
-                                            value: _usersSelected.contains(_filterContactList[index]),
-                                          );
-                                        },
-                                      ) : Center(
-                                        child: CircularProgressIndicator(),
-                                      ),
-                                    ),
-                                  ],
-                                )
-                            );
+                                ),
+                              ],
+                            ));
                           });
-                        }
-                    );
+                        });
                   },
                   icon: Icon(Icons.add, size: 18),
                   label: Text('Ajouter un contact')),
@@ -349,7 +345,6 @@ class _TaskFormPageState extends State<TaskFormPage> {
 
   void _sendTask(BuildContext context) {
     if (widget.editable) {
-
       widget.task.user = UserService.currentUser;
 
       widget.task.receivers = _usersSelected;
@@ -358,38 +353,35 @@ class _TaskFormPageState extends State<TaskFormPage> {
       widget.task.createdAt = DateTime.now();
       print(widget.task.toJson().toString());
       _taskService.createTask(widget.task).then((value) {
-        if ([201,202,200].contains(value.statusCode)) {
-          ScaffoldMessenger.of(context).showSnackBar(
-              _buildSnackBar('La tâche a été bien créée'));
+        if ([201, 202, 200].contains(value.statusCode)) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(_buildSnackBar('La tâche a été bien créée'));
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      HomeScreen()));
-        }
-        else
-          ScaffoldMessenger.of(context).showSnackBar(_buildSnackBar('Une erreure s\'est produite'));
+              context, MaterialPageRoute(builder: (context) => HomeScreen()));
+        } else
+          ScaffoldMessenger.of(context)
+              .showSnackBar(_buildSnackBar('Une erreure s\'est produite'));
       }).onError((error, stackTrace) {
-        ScaffoldMessenger.of(context).showSnackBar(_buildSnackBar('Une erreure s\'est produite'));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(_buildSnackBar('Une erreure s\'est produite'));
       });
     } else {
       print(widget.task.dateTime);
       if (_dateTime.isAtSameMomentAs(widget.task.dateTime)) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            _buildSnackBar('Aucune modification identifiée'));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(_buildSnackBar('Aucune modification identifiée'));
       } else {
         print(widget.task);
-        _taskService.updateTask(widget.task)
-            .then((value) {
-          if ([201,202,200].contains(value.statusCode)) {
-            ScaffoldMessenger.of(context).showSnackBar(
-                _buildSnackBar('La tâche a été bien modifiée'));
-          }
-          else
-            ScaffoldMessenger.of(context).showSnackBar(_buildSnackBar('Une erreure s\'est produite'));
-        })
-            .onError((error, stackTrace) {
-          ScaffoldMessenger.of(context).showSnackBar(_buildSnackBar('Une erreure s\'est produite'));
+        _taskService.updateTask(widget.task).then((value) {
+          if ([201, 202, 200].contains(value.statusCode)) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(_buildSnackBar('La tâche a été bien modifiée'));
+          } else
+            ScaffoldMessenger.of(context)
+                .showSnackBar(_buildSnackBar('Une erreure s\'est produite'));
+        }).onError((error, stackTrace) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(_buildSnackBar('Une erreure s\'est produite'));
         });
       }
     }
