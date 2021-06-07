@@ -33,7 +33,7 @@ class AuthService {
       UserModal user = UserModal(userCredential.user.uid, email, password);
 
       return user;
-    } on FirebaseAuthException catch (e) {
+    } on Exception catch (e) {
       return null;
     }
   }

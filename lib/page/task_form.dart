@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:private_nanny/model/task.dart';
@@ -43,23 +41,25 @@ class _TaskFormPageState extends State<TaskFormPage> {
   void initState() {
     super.initState();
 
-    _usersSelected = widget.task.receivers != null ? widget.task.receivers : _usersSelected = [];
+    _usersSelected = widget.task.receivers != null
+        ? widget.task.receivers
+        : _usersSelected = [];
     _filterContactList = UserService.currentUser.contacts;
 
     _switchValue = widget.task.dateTime != null;
     _dropdownValue = Task.getFromDuration(widget.task.delayBetweenRepetition);
 
     // initiate receivers
-    _usersSelected = widget.task.receivers == null ? []
-    : widget.task.receivers;
+    _usersSelected = widget.task.receivers == null ? [] : widget.task.receivers;
 
     // initiate text controller
     _titleController.text = widget.task.title;
     _detailController.text = widget.task.detail;
-    _detailController.addListener(() => widget.task.detail = _detailController.text);
-    _titleController.addListener(() => widget.task.title = _titleController.text);
+    _detailController
+        .addListener(() => widget.task.detail = _detailController.text);
+    _titleController
+        .addListener(() => widget.task.title = _titleController.text);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -85,101 +85,96 @@ class _TaskFormPageState extends State<TaskFormPage> {
               ],
             ),
           ),
-        )
-    );
+        ));
   }
 
   Widget _buildReminder() {
     return Container(
         child: Column(
-          children: [
-            SwitchListTile(
-                title: Text('Rappel'),
-                value: _switchValue,
-                onChanged: (bool value) {
-                  setState(() {
-                    _switchValue = !_switchValue;
-                  });
-                }),
-            Visibility(
-              visible: _switchValue,
-              child: Container(
-                padding: EdgeInsets.only(left: 7),
-                child: Column(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(bottom: 10),
-                      child: DatetimePickerWidget(
-                        task: widget.task, formKey: _datetimeFormKey,),
-                    ),
-                    _buildRepeatition(context)
-                  ],
+      children: [
+        SwitchListTile(
+            title: Text('Rappel'),
+            value: _switchValue,
+            onChanged: (bool value) {
+              setState(() {
+                _switchValue = !_switchValue;
+              });
+            }),
+        Visibility(
+          visible: _switchValue,
+          child: Container(
+            padding: EdgeInsets.only(left: 7),
+            child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.only(bottom: 10),
+                  child: DatetimePickerWidget(
+                    task: widget.task,
+                    formKey: _datetimeFormKey,
+                  ),
                 ),
-              ),
-            )
-          ],
+                _buildRepeatition(context)
+              ],
+            ),
+          ),
         )
-    );
+      ],
+    ));
   }
 
   Widget _buildTextFields() {
     return Container(
-        child:
-        Form(
-          key: _textfieldFormKey,
-          child: Column(
-            children: [
-              Container(
-                child: TextFormField(
-                  maxLength: 30,
-                  controller: _titleController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Il faut au moins l\'intitulé';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    filled: true,
-                    labelText: 'Intitulé',
-                  ),
-                ),
+        child: Form(
+      key: _textfieldFormKey,
+      child: Column(
+        children: [
+          Container(
+            child: TextFormField(
+              maxLength: 30,
+              controller: _titleController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Il faut au moins l\'intitulé';
+                }
+                return null;
+              },
+              decoration: InputDecoration(
+                filled: true,
+                labelText: 'Intitulé',
               ),
-              Container(
-                margin: EdgeInsets.only(top: 6),
-                child: TextField(
-                  maxLength: 255,
-                  controller: _detailController,
-                  maxLines: 3,
-                  keyboardType: TextInputType.multiline,
-                  decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
-                      labelText: 'Détail'
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-        )
-    );
+          Container(
+            margin: EdgeInsets.only(top: 6),
+            child: TextField(
+              maxLength: 255,
+              controller: _detailController,
+              maxLines: 3,
+              keyboardType: TextInputType.multiline,
+              decoration: InputDecoration(
+                  border: const OutlineInputBorder(), labelText: 'Détail'),
+            ),
+          ),
+        ],
+      ),
+    ));
   }
 
   Widget _buildUsers() {
     final userChipList = <Widget>[];
 
-
-
     _usersSelected?.forEach((element) {
-      userChipList.add(
-          InputChip(
-            label: Text(element.displayName),
-            deleteIcon: Icon(Icons.remove_circle,),
-            onDeleted: () {
-              setState(() {
-                _usersSelected.remove(element);
-              });
-            },
-          ));
+      userChipList.add(InputChip(
+        label: Text(element.displayName),
+        deleteIcon: Icon(
+          Icons.remove_circle,
+        ),
+        onDeleted: () {
+          setState(() {
+            _usersSelected.remove(element);
+          });
+        },
+      ));
     });
 
     return Container(
@@ -205,73 +200,85 @@ class _TaskFormPageState extends State<TaskFormPage> {
                       isScrollControlled: true,
                       context: context,
                       builder: (BuildContext context) {
-                        return StatefulBuilder(builder: (BuildContext context, StateSetter setModalState) {
+                        return StatefulBuilder(builder:
+                            (BuildContext context, StateSetter setModalState) {
                           return Popover(
                               child: Column(
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.only(bottom: 20),
-                                    child: Text(
-                                      'Ajouter un contact à la tâche',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 20
+                            children: [
+                              Container(
+                                margin: EdgeInsets.only(bottom: 20),
+                                child: Text(
+                                  'Ajouter un contact à la tâche',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 20),
+                                ),
+                              ),
+                              Container(
+                                padding: EdgeInsets.symmetric(horizontal: 20),
+                                margin: EdgeInsets.only(bottom: 10),
+                                child: TextField(
+                                  onChanged: (value) {
+                                    setModalState(() {
+                                      // Fixme correction du filtre
+                                      _filterContactList = UserService
+                                          .currentUser.contacts
+                                          .where((user) => user.displayName
+                                              .toLowerCase()
+                                              .contains(value))
+                                          .toList();
+                                    });
+                                  },
+                                  decoration: InputDecoration(
+                                      filled: true,
+                                      labelText: 'Contact',
+                                      hintText: 'nom ou prénom'),
+                                ),
+                              ),
+                              Container(
+                                height: 400,
+                                child: _filterContactList.length > 0
+                                    ? ListView.builder(
+                                        itemCount: _filterContactList.length,
+                                        scrollDirection: Axis.vertical,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          return CheckboxListTile(
+                                            title: Text(
+                                                _filterContactList[index]
+                                                    .displayName),
+                                            subtitle: Text(
+                                                _filterContactList[index]
+                                                    .phoneNo),
+                                            onChanged: (value) {
+                                              setState(() {
+                                                if (!_usersSelected.contains(
+                                                    _filterContactList[index]))
+                                                  _usersSelected.add(
+                                                      _filterContactList[
+                                                          index]);
+                                                else
+                                                  _usersSelected.remove(
+                                                      _filterContactList[
+                                                          index]);
+                                              });
+                                              setModalState(() {
+                                                _usersSelected = _usersSelected;
+                                              });
+                                            },
+                                            value: _usersSelected.contains(
+                                                _filterContactList[index]),
+                                          );
+                                        },
+                                      )
+                                    : Center(
+                                        child: CircularProgressIndicator(),
                                       ),
-                                    ),
-                                  ),
-                                  Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 20),
-                                    margin: EdgeInsets.only(bottom: 10),
-                                    child: TextField(
-                                      onChanged: (value) {
-                                        setModalState(() {
-                                          // Fixme correction du filtre
-                                          _filterContactList = UserService.currentUser.contacts.where((user) =>
-                                              user.displayName.toLowerCase().contains(value)
-                                          ).toList();
-                                        });
-                                      },
-                                      decoration: InputDecoration(
-                                          filled: true,
-                                          labelText: 'Contact',
-                                          hintText: 'nom ou prénom'
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    height: 400,
-                                    child: _filterContactList.length > 0 ?
-                                    ListView.builder(
-                                      itemCount: _filterContactList.length,
-                                      scrollDirection: Axis.vertical,
-                                      itemBuilder: (BuildContext context, int index) {
-                                        return CheckboxListTile(
-                                          title: Text(_filterContactList[index].displayName),
-                                          subtitle: Text(_filterContactList[index].phoneNo),
-                                          onChanged: (value) {
-                                            setState(() {
-                                              if (!_usersSelected.contains(_filterContactList[index]))
-                                                _usersSelected.add(_filterContactList[index]);
-                                              else
-                                                _usersSelected.remove(_filterContactList[index]);
-                                            });
-                                            setModalState(() {
-                                              _usersSelected = _usersSelected;
-                                            });
-                                          },
-                                          value: _usersSelected.contains(_filterContactList[index]),
-                                        );
-                                      },
-                                    ) : Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                  ),
-                                ],
-                              )
-                          );
+                              ),
+                            ],
+                          ));
                         });
-                      }
-                  );
+                      });
                 },
                 icon: Icon(Icons.add, size: 18),
                 label: Text('Ajouter un contact')),
@@ -299,11 +306,9 @@ class _TaskFormPageState extends State<TaskFormPage> {
                 _dropdownValue = r;
               });
             },
-            items: Repeatition.values.map((e) =>
-                DropdownMenuItem(
-                    value: e,
-                    child: Text(e.name)
-                )).toList(),
+            items: Repeatition.values
+                .map((e) => DropdownMenuItem(value: e, child: Text(e.name)))
+                .toList(),
           )
         ],
       ),
@@ -315,8 +320,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
       onPressed: () {
         if (_textfieldFormKey.currentState.validate()) {
           if (_switchValue) {
-            if (_datetimeFormKey.currentState.validate())
-              _sendTask(context);
+            if (_datetimeFormKey.currentState.validate()) _sendTask(context);
           } else {
             _sendTask(context);
           }
@@ -337,22 +341,20 @@ class _TaskFormPageState extends State<TaskFormPage> {
     widget.task.createdAt = DateTime.now();
     print(widget.task.toJson().toString());
     _taskService.createTask(widget.task).then((value) {
-      if ([201,202].contains(value.statusCode)) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            _buildSnackBar('La tâche a été bien créée'));
+      if ([201, 202].contains(value.statusCode)) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(_buildSnackBar('La tâche a été bien créée'));
+        UserService service = UserService();
+        service.updateCurretUser(UserService.currentUser.uid);
         Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    HomeScreen()));
-      }
-      else
-        ScaffoldMessenger.of(context).showSnackBar(_buildSnackBar('Une erreure s\'est produite'));
+            context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      } else
+        ScaffoldMessenger.of(context)
+            .showSnackBar(_buildSnackBar('Une erreure s\'est produite'));
     }).onError((error, stackTrace) {
-      ScaffoldMessenger.of(context).showSnackBar(_buildSnackBar('Une erreure s\'est produite'));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(_buildSnackBar('Une erreure s\'est produite'));
     });
-
-
   }
 
   Widget _buildSnackBar(text) {

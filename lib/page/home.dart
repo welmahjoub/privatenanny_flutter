@@ -43,9 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: AvatarGlow(
           animate: _isListening,
-          glowColor: Theme
-              .of(context)
-              .primaryColor,
+          glowColor: Theme.of(context).primaryColor,
           endRadius: 75.0,
           duration: const Duration(milliseconds: 2000),
           repeatPauseDuration: const Duration(milliseconds: 100),
@@ -56,48 +54,50 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         body: SingleChildScrollView(
-                child: Column(children: <Widget>[
-                  Container(
-                      //color: Colors.amber[600],
-                      padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 150.0),
-                      child: ListView.builder(
-                        //scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          itemCount: userTasks.length,
-                          itemBuilder: (BuildContext context, index) {
-                            return Card(
-                                child: ListTile(
-                                  leading: Text(userTasks[index].dateTime.day.toString() +
-                                      " / " +
-                                      userTasks[index].dateTime.month.toString(),),
-                                  title: Text("  :    " + userTasks[index].title ),
-                                  onTap: () => displayTask(userTasks[index]),
-                                  trailing: IconButton(
-                                          color: Colors.blue,
-                                          icon: userTasks[index].isValidated ? Icon(Icons.check_circle_rounded) : Icon(Icons.check_circle_outline),
-                                          onPressed: () {
-                                            setState(() {
-                                              userTasks[index].isValidated = !userTasks[index].isValidated;
-                                            });
-                                          }),
-                                  ),
-                                );
-                          })
-                  ),
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 0.0),
-                    child: Text(
-                      _text,
-                      style: const TextStyle(
-                        fontSize: 30.0,
-                        //backgroundColor: Colors.black,
-                        fontWeight: FontWeight.w400,
+            child: Column(children: <Widget>[
+          Container(
+              //color: Colors.amber[600],
+              padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 150.0),
+              child: ListView.builder(
+                  //scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  itemCount: userTasks.length,
+                  itemBuilder: (BuildContext context, index) {
+                    return Card(
+                      child: ListTile(
+                        leading: Text(
+                          userTasks[index].dateTime.day.toString() +
+                              " / " +
+                              userTasks[index].dateTime.month.toString(),
+                        ),
+                        title: Text("  :    " + userTasks[index].title),
+                        onTap: () => displayTask(userTasks[index]),
+                        trailing: IconButton(
+                            color: Colors.blue,
+                            icon: userTasks[index].isValidated
+                                ? Icon(Icons.check_circle_rounded)
+                                : Icon(Icons.check_circle_outline),
+                            onPressed: () {
+                              setState(() {
+                                userTasks[index].isValidated =
+                                    !userTasks[index].isValidated;
+                              });
+                            }),
                       ),
-                    ),
-                  ),
-                ])
-      )
-    );
+                    );
+                  })),
+          Container(
+            padding: const EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 0.0),
+            child: Text(
+              _text,
+              style: const TextStyle(
+                fontSize: 30.0,
+                //backgroundColor: Colors.black,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
+        ])));
   }
 
   void _listen() async {
@@ -113,12 +113,10 @@ class _HomeScreenState extends State<HomeScreen> {
         print(_localeId);
         _speech.listen(
           localeId: _localeId,
-          listenFor: Duration(minutes: 1),
-          onResult: (val) =>
-              setState(() {
-                _text = val.recognizedWords;
-                print(_text);
-              }),
+          onResult: (val) => setState(() {
+            _text = val.recognizedWords;
+            print(_text);
+          }),
         );
       }
     } else {
@@ -134,6 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   displayTask(Task task) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => TaskFormPage(task:task)));
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => TaskFormPage(task: task)));
   }
 }

@@ -16,7 +16,7 @@ class _LoginPageState extends State<LoginPage> {
   final formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
   AuthService _service = AuthService();
-
+  bool _success;
   String _email;
   String _password;
 
@@ -61,6 +61,18 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: _submitCommand,
                 child: Text('Connexion'),
               ),
+              Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  _success == null
+                      ? ''
+                      : (_success
+                          ? 'Successfully signed in, uid: '
+                          : 'Sign in failed'),
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
               new FlatButton(
                 child: new Text('Pas encore de compte ? Créer un compte.'),
                 onPressed: _redirectToRegisterPage,
@@ -77,21 +89,34 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _loginPressed() {
-    _service.login(_email, _password).then((value) => {
-          if (value != null) {loginRedirect()}
-        });
+    _service
+        .login(_email, _password)
+        .then((value) => {
+              if (value != null)
+                {loginRedirect()}
+              else
+                {
+                  setState(() {
+                    _success = false;
+                  })
+                }
+            })
+        .onError((error, stackTrace) => null);
   }
 
   Future<void> loginRedirect() async {
     UserService service = UserService();
     await service.updateCurretUser(_service.auth.currentUser.uid);
-
+    setState(() {
+      _success = true;
+    });
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => HomeScreen()));
   }
 
   void _passwordReset() {
-    print("L'utilisateur souhaite qu'une demande de réinitialisation de mot de passe soit envoyée à $_email");
+    print(
+        "L'utilisateur souhaite qu'une demande de réinitialisation de mot de passe soit envoyée à $_email");
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => ForgotPwd()));
   }
