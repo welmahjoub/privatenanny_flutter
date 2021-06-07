@@ -6,7 +6,8 @@ class ForgotPwd extends StatelessWidget {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: AppBar(
-        title: Text('Reset password'),
+        centerTitle: true,
+        title: Text('Réinitialiser le mot de passe'),
       ),
       body: new Center(
         child: new Column(
@@ -24,7 +25,7 @@ class ForgotPwd extends StatelessWidget {
                   //api call to reset password or whatever
                   Navigator.of(context).pop();
                 },
-                child: new Text("Resend Passcode")),
+                child: new Text("Renvoyer le code d'accès")),
           ],
         ),
       ),

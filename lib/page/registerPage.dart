@@ -34,7 +34,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _createAccountFirebase() {
-    print('The user wants to create an accoutn with $_email and $_password');
+    print("L'utilisateur veut créer un compte avec $_email et $_password");
     AuthService _authService = AuthService();
 
     _authService
@@ -57,7 +57,8 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        title: Text('Register Page '),
+        centerTitle: true,
+        title: Text('Inscription '),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -68,30 +69,30 @@ class _RegisterPageState extends State<RegisterPage> {
               TextFormField(
                 decoration: InputDecoration(labelText: 'Email'),
                 validator: (val) => !EmailValidator.validate(val, true)
-                    ? 'Not a valid email.'
+                    ? 'Email invalide.'
                     : null,
                 onSaved: (val) => _email = val,
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Password'),
+                decoration: InputDecoration(labelText: 'Mot de passe'),
                 validator: (val) =>
-                    val.length < 6 ? 'Password too short..' : null,
+                    val.length < 6 ? 'Mot de passe trop court.' : null,
                 onSaved: (val) => _password = val,
                 obscureText: true,
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Phone'),
+                decoration: InputDecoration(labelText: 'Numéro de téléphone'),
                 validator: (val) =>
-                    val.length < 10 ? 'Phone number too short..' : null,
+                    val.length < 10 ? 'Numéro de téléphone trop court.' : null,
                 onSaved: (val) => _password = val,
               ),
               RaisedButton(
                 onPressed: _submitCommand,
-                child: Text('Register'),
+                child: Text('Inscription'),
               ),
               FlatButton(
                 onPressed: _redirectToLoginPage,
-                child: Text('Have an account? Click here to login.'),
+                child: Text('Vous avez un compte? Se connecter.'),
               )
             ],
           ),

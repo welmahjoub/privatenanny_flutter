@@ -34,7 +34,8 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        title: Text('Email validation example'),
+        centerTitle: true,
+        title: Text('Connexion'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -45,27 +46,27 @@ class _LoginPageState extends State<LoginPage> {
               TextFormField(
                 decoration: InputDecoration(labelText: 'Email'),
                 validator: (val) => !EmailValidator.validate(val, true)
-                    ? 'Not a valid email.'
+                    ? 'Email invalide.'
                     : null,
                 onSaved: (val) => _email = val,
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Password'),
+                decoration: InputDecoration(labelText: 'Mot de passe'),
                 validator: (val) =>
-                    val.length < 4 ? 'Password too short..' : null,
+                    val.length < 4 ? 'Mot de passe trop court.' : null,
                 onSaved: (val) => _password = val,
                 obscureText: true,
               ),
               RaisedButton(
                 onPressed: _submitCommand,
-                child: Text('Sign in'),
+                child: Text('Connexion'),
               ),
               new FlatButton(
-                child: new Text('Dont have an account? Tap here to register.'),
+                child: new Text('Pas encore de compte ? Créer un compte.'),
                 onPressed: _redirectToRegisterPage,
               ),
               new FlatButton(
-                child: new Text('Forgot Password?'),
+                child: new Text('Mot de passe oublié ?'),
                 onPressed: _passwordReset,
               )
             ],
@@ -90,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _passwordReset() {
-    print("The user wants a password reset request sent to $_email");
+    print("L'utilisateur souhaite qu'une demande de réinitialisation de mot de passe soit envoyée à $_email");
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => ForgotPwd()));
   }
