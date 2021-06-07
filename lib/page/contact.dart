@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:private_nanny/model/utilisateur.dart';
 import 'package:private_nanny/service/auth.dart';
@@ -37,6 +38,8 @@ class _ContactScreenState extends State<ContactScreen> {
     //           initialList = value.map((e) => e.displayName).toList();
     //         }));
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -103,6 +106,51 @@ class _ContactScreenState extends State<ContactScreen> {
             ),
         ],
       ),
+      bottomNavigationBar: BottomSection(),
     );
   }
+}
+
+class BottomSection extends StatelessWidget{
+
+  @override
+  Widget build(BuildContext context) {
+    return BottomNavigationBar(
+      backgroundColor: Colors.blue,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        items: [
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.arrow_back_ios_rounded,
+                color: Colors.white,
+              ),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+              icon: Text(
+                "Nouveau contact",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              label: ''
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(
+                  Icons.add_circle,
+                  color: Colors.white,
+              ),
+            label: '',
+          )
+        ],
+    );
+  }
+
+
+
+
 }
