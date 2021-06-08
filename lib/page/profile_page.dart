@@ -6,12 +6,12 @@ import 'package:private_nanny/service/auth.dart';
 import 'package:private_nanny/service/UserService.dart';
 import 'home.dart';
 
-class RegisterPage extends StatefulWidget {
+class PorfilePage extends StatefulWidget {
   @override
-  _RegisterPageState createState() => _RegisterPageState();
+  _PorfilePageState createState() => _PorfilePageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _PorfilePageState extends State<PorfilePage> {
   final formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -44,7 +44,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void _createAccountBackend() {
     UserService back = UserService();
-
     back
         .createUser(Utilisateur(_email, _email, _phone, _email))
         .then((value) => print(value.statusCode));
@@ -59,7 +58,7 @@ class _RegisterPageState extends State<RegisterPage> {
       key: scaffoldKey,
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Inscription '),
+        title: Text('profile '),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
