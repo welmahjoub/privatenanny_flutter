@@ -46,7 +46,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
     _usersSelected = widget.task.receivers != null
         ? widget.task.receivers
         : _usersSelected = [];
-    _filterContactList = UserService.currentUser.contacts;
+    _filterContactList = UserService.currentUser?.contacts;
 
     _switchValue = widget.task.dateTime != null;
     _dropdownValue = Task.getFromDuration(widget.task.delayBetweenRepetition);

@@ -89,6 +89,9 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _loginPressed() {
+    print(_email);
+    print(_password);
+
     _service
         .login(_email, _password)
         .then((value) => {
@@ -107,6 +110,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> loginRedirect() async {
     UserService service = UserService();
     await service.updateCurretUser(_service.auth.currentUser.uid);
+
     setState(() {
       _success = true;
     });

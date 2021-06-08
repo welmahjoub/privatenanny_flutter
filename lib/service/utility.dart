@@ -8,9 +8,10 @@ class Utility {
     //String text = "prévient thomas de s'habiller à 17H pour le rugby";
     List<String> textes = text.split(" ");
     var date = new DateTime.now();
-    List<String> Allcontacts = UserService.currentUser.contacts
-        .map((e) => e.displayName.toLowerCase())
-        .toList();
+    List<String> Allcontacts = UserService.currentUser?.contacts
+        ?.map((e) => e.displayName.toLowerCase())
+        ?.toList();
+
     String dateString = text.replaceAll(new RegExp(r'[^0-9]'), '');
 
     if (dateString.isNotEmpty) {
@@ -20,15 +21,15 @@ class Utility {
     }
 
     List<String> receiversName = textes
-        .where((item) => Allcontacts.contains(item.toLowerCase()))
+        .where((item) => Allcontacts?.contains(item.toLowerCase()))
         .toList(); // thomas
 
     print(receiversName.toString());
 
-    List<Utilisateur> receivers = UserService.currentUser.contacts
-        .where((element) =>
+    List<Utilisateur> receivers = UserService.currentUser?.contacts
+        ?.where((element) =>
             receiversName.contains(element.displayName.toLowerCase()))
-        .toList();
+        ?.toList();
 
     if (text.toLowerCase().contains("moi")) {
       receivers.add(UserService.currentUser);
