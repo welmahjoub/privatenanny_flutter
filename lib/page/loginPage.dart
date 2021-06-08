@@ -92,19 +92,15 @@ class _LoginPageState extends State<LoginPage> {
     print(_email);
     print(_password);
 
-    _service
-        .login(_email, _password)
-        .then((value) => {
-              if (value != null)
-                {loginRedirect()}
-              else
-                {
-                  setState(() {
-                    _success = false;
-                  })
-                }
-            })
-        .onError((error, stackTrace) => null);
+    _service.login(_email, _password).then((value) {
+      if (value != null) {
+        loginRedirect();
+      } else {
+        setState(() {
+          _success = false;
+        });
+      }
+    }).onError((error, stackTrace) => null);
   }
 
   Future<void> loginRedirect() async {

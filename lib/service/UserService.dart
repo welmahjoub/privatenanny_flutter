@@ -42,6 +42,7 @@ class UserService {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
+        'uid': user.uid,
         'email': user.email,
         'pseudo': user.pseudo,
         'displayName': user.displayName,

@@ -45,9 +45,16 @@ class _RegisterPageState extends State<RegisterPage> {
   void _createAccountBackend() {
     UserService back = UserService();
     AuthService _authService = AuthService();
+    var user = Utilisateur(_email, _email, _phone, _email);
+    user.contacts = [];
+    user.groups = [];
+    user.tasks = [];
+    user.uid = _authService.auth.currentUser.uid;
 
-    back.createUser(Utilisateur(_email, _email, _phone, _email)).then(
-        (value) => back.updateCurretUser(_authService.auth.currentUser.uid));
+    back.createUser(user).then((value) {
+      back.updateCurretUser(_authService.auth.currentUser.uid);
+      print(value.statusCode);
+    });
 
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => HomeScreen()));

@@ -18,6 +18,7 @@ class _PorfilePageState extends State<PorfilePage> {
   String _email;
   String _password;
   String _phone;
+  String _username;
 
   void _submitCommand() {
     final form = formKey.currentState;
@@ -26,11 +27,6 @@ class _PorfilePageState extends State<PorfilePage> {
       form.save();
       _createAccountFirebase();
     }
-  }
-
-  void _redirectToLoginPage() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => LoginPage()));
   }
 
   void _createAccountFirebase() {
@@ -67,6 +63,10 @@ class _PorfilePageState extends State<PorfilePage> {
           child: Column(
             children: [
               TextFormField(
+                decoration: InputDecoration(labelText: 'User Name'),
+                onSaved: (val) => _username = val,
+              ),
+              TextFormField(
                 decoration: InputDecoration(labelText: 'Email'),
                 validator: (val) => !EmailValidator.validate(val, true)
                     ? 'Email invalide.'
@@ -88,12 +88,8 @@ class _PorfilePageState extends State<PorfilePage> {
               ),
               RaisedButton(
                 onPressed: _submitCommand,
-                child: Text('Inscription'),
+                child: Text('Modifer'),
               ),
-              FlatButton(
-                onPressed: _redirectToLoginPage,
-                child: Text('Vous avez un compte? Se connecter.'),
-              )
             ],
           ),
         ),
