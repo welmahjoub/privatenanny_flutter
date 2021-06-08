@@ -356,6 +356,8 @@ class _TaskFormPageState extends State<TaskFormPage> {
         if ([201, 202, 200].contains(value.statusCode)) {
           ScaffoldMessenger.of(context)
               .showSnackBar(_buildSnackBar('La tâche a été bien créée'));
+          UserService user = UserService();
+          user.updateCurretUser(UserService.currentUser.uid);
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => HomeScreen()));
         } else
