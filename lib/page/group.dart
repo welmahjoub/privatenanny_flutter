@@ -20,19 +20,16 @@ class _GroupScreenState extends State<GroupScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     setState(() {
-      initialList =
-          UserService.currentUser.groups.map((e) => e.groupName).toList();
+      if (UserService.currentUser != null) {
+        initialList =
+            UserService.currentUser.groups.map((e) => e.groupName).toList();
+      } else {
+        initialList = [];
+      }
     });
-
-    // back
-    //     .getContacts(_authService.auth.currentUser.uid)
-    //     .then((value) => setState(() {
-    //           initialList = value.map((e) => e.displayName).toList();
-    //         }));
   }
 
   @override
@@ -51,15 +48,11 @@ class _GroupScreenState extends State<GroupScreen> {
                     borderRadius: const BorderRadius.all(
                       const Radius.circular(20.0),
                     ),
-                    borderSide: BorderSide(
-                        color: Colors.blue,
-                        width: 2
-                    ),
+                    borderSide: BorderSide(color: Colors.blue, width: 2),
                   ),
                   focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.white, width: 32.0),
-                      borderRadius: BorderRadius.circular(25.0)
-                  ),
+                      borderRadius: BorderRadius.circular(25.0)),
                   filled: true,
                   hintStyle: new TextStyle(color: Colors.grey[800]),
                   //hintText: "Rechercher un contact",

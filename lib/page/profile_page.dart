@@ -6,18 +6,19 @@ import 'package:private_nanny/service/auth.dart';
 import 'package:private_nanny/service/UserService.dart';
 import 'home.dart';
 
-class RegisterPage extends StatefulWidget {
+class PorfilePage extends StatefulWidget {
   @override
-  _RegisterPageState createState() => _RegisterPageState();
+  _PorfilePageState createState() => _PorfilePageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _PorfilePageState extends State<PorfilePage> {
   final formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   String _email;
   String _password;
   String _phone;
+  String _username;
 
   void _submitCommand() {
     final form = formKey.currentState;
@@ -26,11 +27,6 @@ class _RegisterPageState extends State<RegisterPage> {
       form.save();
       _createAccountFirebase();
     }
-  }
-
-  void _redirectToLoginPage() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => LoginPage()));
   }
 
   void _createAccountFirebase() {
@@ -44,17 +40,9 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void _createAccountBackend() {
     UserService back = UserService();
-    AuthService _authService = AuthService();
-    var user = Utilisateur(_email, _email, _phone, _email);
-    user.contacts = [];
-    user.groups = [];
-    user.tasks = [];
-    user.uid = _authService.auth.currentUser.uid;
-
-    back.createUser(user).then((value) {
-      back.updateCurretUser(_authService.auth.currentUser.uid);
-      print(value.statusCode);
-    });
+    back
+        .createUser(Utilisateur(_email, _email, _phone, _email))
+        .then((value) => print(value.statusCode));
 
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => HomeScreen()));
@@ -66,7 +54,7 @@ class _RegisterPageState extends State<RegisterPage> {
       key: scaffoldKey,
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Inscription '),
+        title: Text('profile '),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -74,6 +62,10 @@ class _RegisterPageState extends State<RegisterPage> {
           key: formKey,
           child: Column(
             children: [
+              TextFormField(
+                decoration: InputDecoration(labelText: 'User Name'),
+                onSaved: (val) => _username = val,
+              ),
               TextFormField(
                 decoration: InputDecoration(labelText: 'Email'),
                 validator: (val) => !EmailValidator.validate(val, true)
@@ -89,20 +81,15 @@ class _RegisterPageState extends State<RegisterPage> {
                 obscureText: true,
               ),
               TextFormField(
-                  decoration: InputDecoration(labelText: 'Numéro de téléphone'),
-                  validator: (val) => val.length < 10
-                      ? 'Numéro de téléphone trop court.'
-                      : null,
-                  onSaved: (val) => _phone = val,
-                  keyboardType: TextInputType.number),
+                decoration: InputDecoration(labelText: 'Numéro de téléphone'),
+                validator: (val) =>
+                    val.length < 10 ? 'Numéro de téléphone trop court.' : null,
+                onSaved: (val) => _password = val,
+              ),
               RaisedButton(
                 onPressed: _submitCommand,
-                child: Text('Inscription'),
+                child: Text('Modifer'),
               ),
-              FlatButton(
-                onPressed: _redirectToLoginPage,
-                child: Text('Vous avez un compte? Se connecter.'),
-              )
             ],
           ),
         ),

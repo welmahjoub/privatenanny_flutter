@@ -29,9 +29,12 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _speech = stt.SpeechToText();
-
+    print(_authService.auth.currentUser.uid);
     setState(() {
-      userTasks = UserService.currentUser.tasks;
+      userTasks = UserService.currentUser?.tasks;
+      if (userTasks == null) {
+        userTasks = [];
+      }
     });
   }
 

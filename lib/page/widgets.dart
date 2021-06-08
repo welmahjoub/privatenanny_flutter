@@ -3,14 +3,25 @@ import 'package:private_nanny/page/contact.dart';
 import 'package:private_nanny/page/group.dart';
 import 'package:private_nanny/page/home.dart';
 import 'package:private_nanny/page/loginPage.dart';
+import 'package:private_nanny/page/profile_page.dart';
 import 'package:private_nanny/service/auth.dart';
 
+//actions: [Icon(Icons.account_circle_rounded), Container(width: 15)],
 class Widgets {
   Widget appBar(BuildContext context, title) {
     return new AppBar(
       title: Text(title),
       centerTitle: true,
-      actions: [Icon(Icons.account_circle_rounded), Container(width: 15)],
+      actions: <Widget>[
+        new IconButton(
+          icon: new Icon(Icons.account_circle_rounded),
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => PorfilePage()));
+          },
+        ),
+        Container(width: 15)
+      ],
     );
   }
 

@@ -12,25 +12,25 @@ class UserService {
     final response = await http.get(
       Uri.parse('https://privatenanny.herokuapp.com/user/' + uid),
     );
-    print(jsonDecode(response.body).toString());
+    if (response.body != null && response.body != "") {
+      currentUser = Utilisateur.fromJson(jsonDecode(response.body));
 
-    currentUser = Utilisateur.fromJson(jsonDecode(response.body));
+      final contacts = (jsonDecode(response.body)["contacts"] as List)
+          .map((data) => Utilisateur.fromJson(data))
+          .toList();
 
-    final contacts = (jsonDecode(response.body)["contacts"] as List)
-        .map((data) => Utilisateur.fromJson(data))
-        .toList();
+      final groups = (jsonDecode(response.body)["groups"] as List)
+          .map((data) => Group.fromJson(data))
+          .toList();
 
-    final groups = (jsonDecode(response.body)["groups"] as List)
-        .map((data) => Group.fromJson(data))
-        .toList();
+      final tasks = (jsonDecode(response.body)["taskList"] as List)
+          .map((data) => Task.fromJson(data))
+          .toList();
 
-    final tasks = (jsonDecode(response.body)["taskList"] as List)
-        .map((data) => Task.fromJson(data))
-        .toList();
-
-    currentUser.groups = groups;
-    currentUser.contacts = contacts;
-    currentUser.tasks = tasks;
+      currentUser.groups = groups;
+      currentUser.contacts = contacts;
+      currentUser.tasks = tasks;
+    }
 
     return response;
   }
@@ -42,6 +42,7 @@ class UserService {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
+        'uid': user.uid,
         'email': user.email,
         'pseudo': user.pseudo,
         'displayName': user.displayName,
