@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:private_nanny/model/utilisateur.dart';
+import 'package:private_nanny/page/CreatContact.dart';
 import 'package:private_nanny/service/auth.dart';
 import 'package:private_nanny/service/UserService.dart';
 import 'widgets.dart';
@@ -105,18 +106,43 @@ class _ContactScreenState extends State<ContactScreen> {
 class BottomSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // return BottomNavigationBar(
+    //   backgroundColor: Colors.blue,
+    //   showSelectedLabels: false,
+    //   showUnselectedLabels: false,
+    //   items: [
+    //     BottomNavigationBarItem(
+    //       icon: Icon(
+    //         Icons.arrow_back_ios_rounded,
+    //         color: Colors.white,
+    //       ),
+    //       label: '',
+    //     ),
+    //     BottomNavigationBarItem(
+    //         icon: Text(
+    //           "Nouveau contact",
+    //           textAlign: TextAlign.center,
+    //           style: TextStyle(
+    //             color: Colors.white,
+    //             fontSize: 15,
+    //             fontWeight: FontWeight.w500,
+    //           ),
+    //         ),
+    //         label: ''),
+    //     BottomNavigationBarItem(
+    //       icon: Icon(
+    //         Icons.add_circle,
+    //         color: Colors.white,
+    //       ),
+    //       label: '',
+    //     ),
+    //   ],
+    // );
     return BottomNavigationBar(
       backgroundColor: Colors.blue,
       showSelectedLabels: false,
       showUnselectedLabels: false,
-      items: [
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.arrow_back_ios_rounded,
-            color: Colors.white,
-          ),
-          label: '',
-        ),
+      items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
             icon: Text(
               "Nouveau contact",
@@ -129,13 +155,14 @@ class BottomSection extends StatelessWidget {
             ),
             label: ''),
         BottomNavigationBarItem(
-          icon: Icon(
-            Icons.add_circle,
-            color: Colors.white,
-          ),
+          icon: Icon(Icons.add_circle, color: Colors.white),
           label: '',
         ),
       ],
+      onTap: (ValueKey) => {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => (CreatNewContact())))
+      },
     );
   }
 }
