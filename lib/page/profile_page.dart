@@ -16,33 +16,46 @@ class _PorfilePageState extends State<PorfilePage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   String _email;
-  String _password;
+  String _password = "";
   String _phone;
   String _username;
+  String _name;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _email = UserService.currentUser.email;
+    _phone = UserService.currentUser.phoneNo;
+    _username = UserService.currentUser.pseudo;
+    _name = UserService.currentUser.displayName;
+  }
 
   void _submitCommand() {
     final form = formKey.currentState;
 
     if (form.validate()) {
       form.save();
-      _createAccountFirebase();
+      _updateAccountFirebase();
     }
   }
 
-  void _createAccountFirebase() {
-    print("L'utilisateur veut créer un compte avec $_email et $_password");
+  void _updateAccountFirebase() {
+    print("L'utilisateur veut modifier un compte avec $_email et $_password");
     AuthService _authService = AuthService();
+    if (_password != "")
+      _authService.auth.currentUser
+          .updatePassword(_password)
+          .then((value) => print("password has changed with succes"));
 
-    _authService
-        .create(_email, _password)
-        .then((value) => {if (value != null) _createAccountBackend()});
+    _updateAccountBackend();
   }
 
-  void _createAccountBackend() {
+  void _updateAccountBackend() {
     UserService back = UserService();
-    back
-        .createUser(Utilisateur(_email, _email, _phone, _email))
-        .then((value) => print(value.statusCode));
+    var user = Utilisateur(_email, _name, _phone, _username);
+    user.uid = UserService.currentUser.uid;
+    back.updateUser(user).then((value) => print(value.statusCode));
 
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => HomeScreen()));
@@ -63,10 +76,17 @@ class _PorfilePageState extends State<PorfilePage> {
           child: Column(
             children: [
               TextFormField(
+                initialValue: _name,
+                decoration: InputDecoration(labelText: 'Prenom Nom '),
+                onSaved: (val) => _name = val,
+              ),
+              TextFormField(
+                initialValue: _username,
                 decoration: InputDecoration(labelText: 'User Name'),
                 onSaved: (val) => _username = val,
               ),
               TextFormField(
+                initialValue: _email,
                 decoration: InputDecoration(labelText: 'Email'),
                 validator: (val) => !EmailValidator.validate(val, true)
                     ? 'Email invalide.'
@@ -74,17 +94,16 @@ class _PorfilePageState extends State<PorfilePage> {
                 onSaved: (val) => _email = val,
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Mot de passe'),
-                validator: (val) =>
-                    val.length < 6 ? 'Mot de passe trop court.' : null,
-                onSaved: (val) => _password = val,
-                obscureText: true,
-              ),
-              TextFormField(
+                initialValue: _phone,
                 decoration: InputDecoration(labelText: 'Numéro de téléphone'),
                 validator: (val) =>
                     val.length < 10 ? 'Numéro de téléphone trop court.' : null,
+                onSaved: (val) => _phone = val,
+              ),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Nouveau Mot de passe'),
                 onSaved: (val) => _password = val,
+                obscureText: true,
               ),
               RaisedButton(
                 onPressed: _submitCommand,
