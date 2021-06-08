@@ -50,4 +50,20 @@ class UserService {
       }),
     );
   }
+
+  Future<http.Response> updateUser(Utilisateur user) {
+    return http.put(
+      Uri.parse('https://privatenanny.herokuapp.com/user/'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'uid': user.uid,
+        'email': user.email,
+        'pseudo': user.pseudo,
+        'displayName': user.displayName,
+        'phoneNo': user.phoneNo
+      }),
+    );
+  }
 }
