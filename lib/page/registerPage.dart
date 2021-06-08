@@ -44,10 +44,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void _createAccountBackend() {
     UserService back = UserService();
+    AuthService _authService = AuthService();
 
-    back
-        .createUser(Utilisateur(_email, _email, _phone, _email))
-        .then((value) => print(value.statusCode));
+    back.createUser(Utilisateur(_email, _email, _phone, _email)).then(
+        (value) => back.updateCurretUser(_authService.auth.currentUser.uid));
 
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => HomeScreen()));
@@ -82,11 +82,12 @@ class _RegisterPageState extends State<RegisterPage> {
                 obscureText: true,
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Numéro de téléphone'),
-                validator: (val) =>
-                    val.length < 10 ? 'Numéro de téléphone trop court.' : null,
-                onSaved: (val) => _password = val,
-              ),
+                  decoration: InputDecoration(labelText: 'Numéro de téléphone'),
+                  validator: (val) => val.length < 10
+                      ? 'Numéro de téléphone trop court.'
+                      : null,
+                  onSaved: (val) => _phone = val,
+                  keyboardType: TextInputType.number),
               RaisedButton(
                 onPressed: _submitCommand,
                 child: Text('Inscription'),

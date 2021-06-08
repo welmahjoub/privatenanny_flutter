@@ -31,7 +31,10 @@ class _HomeScreenState extends State<HomeScreen> {
     _speech = stt.SpeechToText();
 
     setState(() {
-      userTasks = UserService.currentUser.tasks;
+      userTasks = UserService.currentUser?.tasks;
+      if (userTasks == null) {
+        userTasks = [];
+      }
     });
   }
 
