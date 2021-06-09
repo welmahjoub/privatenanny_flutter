@@ -18,8 +18,7 @@ class TaskFormPage extends StatefulWidget {
   Task task;
 }
 
-class _TaskFormPageState extends State<TaskFormPage> {
-  DateTime _dateTime;
+class _TaskFormPageState extends State<TaskFormPage> {  DateTime _dateTime;
   bool _switchValue;
   Repeatition _dropdownValue;
   List<Utilisateur> _usersSelected;
