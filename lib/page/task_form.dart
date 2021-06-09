@@ -46,7 +46,9 @@ class _TaskFormPageState extends State<TaskFormPage> {
     _usersSelected = widget.task.receivers != null
         ? widget.task.receivers
         : _usersSelected = [];
-    _filterContactList = UserService.currentUser?.contacts;
+    _filterContactList = UserService.currentUser.contacts != null
+        ? UserService.currentUser.contacts
+        : [];
 
     _switchValue = widget.task.dateTime != null;
     _dropdownValue = Task.getFromDuration(widget.task.delayBetweenRepetition);
@@ -227,13 +229,16 @@ class _TaskFormPageState extends State<TaskFormPage> {
                                   child: TextField(
                                     onChanged: (value) {
                                       setModalState(() {
-                                        // Fixme correction du filtre
-                                        _filterContactList = UserService
-                                            .currentUser.contacts
-                                            .where((user) => user.displayName
-                                                .toLowerCase()
-                                                .contains(value))
-                                            .toList();
+                                        List<Utilisateur> contacts =
+                                            UserService.currentUser.contacts;
+                                        if (contacts != null) {
+                                          _filterContactList = UserService
+                                              .currentUser.contacts
+                                              .where((user) => user.displayName
+                                                  .toLowerCase()
+                                                  .contains(value))
+                                              .toList();
+                                        }
                                       });
                                     },
                                     decoration: InputDecoration(
@@ -281,7 +286,8 @@ class _TaskFormPageState extends State<TaskFormPage> {
                                           },
                                         )
                                       : Center(
-                                          child: CircularProgressIndicator(),
+                                          child:
+                                              Text('Vous avez aucun contact'),
                                         ),
                                 ),
                               ],
@@ -362,10 +368,10 @@ class _TaskFormPageState extends State<TaskFormPage> {
               context, MaterialPageRoute(builder: (context) => HomeScreen()));
         } else
           ScaffoldMessenger.of(context)
-              .showSnackBar(_buildSnackBar('Une erreure s\'est produite'));
+              .showSnackBar(_buildSnackBar('Une erreur s\'est produite'));
       }).onError((error, stackTrace) {
         ScaffoldMessenger.of(context)
-            .showSnackBar(_buildSnackBar('Une erreure s\'est produite'));
+            .showSnackBar(_buildSnackBar('Une erreur s\'est produite'));
       });
     } else {
       print(widget.task.dateTime);
@@ -380,10 +386,10 @@ class _TaskFormPageState extends State<TaskFormPage> {
                 .showSnackBar(_buildSnackBar('La tâche a été bien modifiée'));
           } else
             ScaffoldMessenger.of(context)
-                .showSnackBar(_buildSnackBar('Une erreure s\'est produite'));
+                .showSnackBar(_buildSnackBar('Une erreur s\'est produite'));
         }).onError((error, stackTrace) {
           ScaffoldMessenger.of(context)
-              .showSnackBar(_buildSnackBar('Une erreure s\'est produite'));
+              .showSnackBar(_buildSnackBar('Une erreur s\'est produite'));
         });
       }
     }
