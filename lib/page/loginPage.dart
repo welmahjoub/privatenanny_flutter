@@ -68,8 +68,8 @@ class _LoginPageState extends State<LoginPage> {
                   _success == null
                       ? ''
                       : (_success
-                          ? 'Successfully signed in, uid: '
-                          : 'Sign in failed'),
+                          ? 'Connexion réussie, uid: '
+                          : 'Échec de la connexion'),
                   style: TextStyle(color: Colors.red),
                 ),
               ),
