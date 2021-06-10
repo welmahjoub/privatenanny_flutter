@@ -54,6 +54,7 @@ class _RegisterPageState extends State<RegisterPage> {
     back.createUser(user).then((value) {
       back.updateCurretUser(_authService.auth.currentUser.uid);
       print(value.statusCode);
+      print(UserService.currentUser.toJson());
     });
 
     Navigator.push(

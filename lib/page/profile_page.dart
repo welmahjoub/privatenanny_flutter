@@ -55,7 +55,11 @@ class _PorfilePageState extends State<PorfilePage> {
     UserService back = UserService();
     var user = Utilisateur(_email, _name, _phone, _username);
     user.uid = UserService.currentUser.uid;
-    back.updateUser(user).then((value) => print(value.statusCode));
+    back.updateUser(user).then((value) {
+      back.updateCurretUser(UserService.currentUser.uid);
+      print(value.statusCode);
+      print(UserService.currentUser.toJson());
+    });
 
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => HomeScreen()));
