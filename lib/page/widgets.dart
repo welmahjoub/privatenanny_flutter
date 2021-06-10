@@ -49,10 +49,10 @@ class Widgets {
               child: ListView(children: <Widget>[
                 createDrawerItem( icon: Icons.home, text: 'Accueil', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()))),
                 Divider(),
-                createDrawerItem(icon: Icons.task, text: 'Mes tâches', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()))),
+                //createDrawerItem(icon: Icons.task, text: 'Mes tâches', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()))),
                 createDrawerItem(icon: Icons.list, text: 'Tâches attribuées', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()))),
                 createDrawerItem(icon: Icons.contacts, text: 'Mes contacts', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ContactScreen()))),
-                createDrawerItem(icon: Icons.groups, text: 'Mes groupes', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => GroupScreen()))),
+                //createDrawerItem(icon: Icons.groups, text: 'Mes groupes', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => GroupScreen()))),
               ])
           ),
           Container(
