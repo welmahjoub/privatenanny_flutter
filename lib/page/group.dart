@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:private_nanny/model/group.dart';
 import 'package:private_nanny/service/UserService.dart';
 import 'package:private_nanny/service/auth.dart';
+import 'group_edit.dart';
 import 'widgets.dart';
 
 class GroupScreen extends StatefulWidget {
@@ -16,6 +18,8 @@ class _GroupScreenState extends State<GroupScreen> {
   List<String> initialList = List();
   List<String> filteredList = List();
 
+  List<Group> groupList = List();
+
   Widgets widgets = Widgets();
 
   @override
@@ -24,8 +28,7 @@ class _GroupScreenState extends State<GroupScreen> {
     super.initState();
 
     setState(() {
-      initialList =
-          UserService.currentUser.groups.map((e) => e.groupName).toList();
+      groupList = UserService.currentUser.groups;
     });
 
     // back
@@ -78,10 +81,12 @@ class _GroupScreenState extends State<GroupScreen> {
           if (filteredList.length == 0 && _textController.text.isEmpty)
             Expanded(
                 child: ListView.builder(
-                    itemCount: initialList.length,
+                    shrinkWrap: true,
+                    itemCount: groupList.length,
                     itemBuilder: (BuildContext context, index) {
                       return ListTile(
-                        title: Text(initialList[index]),
+                        title: Text(groupList[index].groupName),
+                        onTap: () => displayTask(groupList[index]),
                       );
                     }))
           else if (filteredList.length == 0 && _textController.text.isNotEmpty)
@@ -104,5 +109,9 @@ class _GroupScreenState extends State<GroupScreen> {
         ],
       ),
     );
+  }
+
+  displayTask(Group group) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => GroupEditPage(group:group)));
   }
 }
