@@ -5,6 +5,7 @@ class Group {
   String groupName;
   Utilisateur groupOwner;
   List<Utilisateur> groupMembers;
+  Group(this.groupName);
 
   Group.fromJson(Map<String, dynamic> json)
       : id = json['id'],

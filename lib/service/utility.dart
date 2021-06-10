@@ -7,23 +7,37 @@ class Utility {
     text = text.toLowerCase();
     //String text = "prévient thomas de s'habiller à 17H pour le rugby";
     List<String> textes = text.split(" ");
+    var date = new DateTime.now();
+    List<String> Allcontacts = UserService.currentUser?.contacts
+        ?.map((e) => e.displayName.toLowerCase())
+        ?.toList();
 
-    List<String> Allcontacts =
-        UserService.currentUser.contacts.map((e) => e.displayName).toList();
     String dateString = text.replaceAll(new RegExp(r'[^0-9]'), '');
-    int date = int.parse("17"); //17
 
-    //if (text.toLowerCase().contains("moi"))
+    if (dateString.isNotEmpty) {
+      int hours = int.parse(dateString); //17
+      date = new DateTime(date.year, date.month, date.day, hours, 0, 0);
+      print(date.toString());
+    }
 
-    List<String> receiversName =
-        textes.where((item) => Allcontacts.contains(item)).toList(); // thomas
+    List<String> receiversName = textes
+        .where((item) => Allcontacts?.contains(item.toLowerCase()))
+        .toList(); // thomas
 
-    List<Utilisateur> receivers = UserService.currentUser.contacts
-        .where((element) => receiversName.contains(element.displayName))
-        .toList();
+    print(receiversName.toString());
 
-    Task task = Task.withParam(
-        text, text, new DateTime.now(), UserService.currentUser, receivers);
+    List<Utilisateur> receivers = UserService.currentUser?.contacts
+        ?.where((element) =>
+            receiversName.contains(element.displayName.toLowerCase()))
+        ?.toList();
+
+    if (text.toLowerCase().contains("moi")) {
+      receivers.add(UserService.currentUser);
+    }
+
+    print(receivers.toString());
+    Task task =
+        Task.withParam(text, text, date, UserService.currentUser, receivers);
 
     return task;
   }
