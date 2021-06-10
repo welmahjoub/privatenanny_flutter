@@ -12,8 +12,25 @@ class UserService {
     final response = await http.get(
       Uri.parse('https://privatenanny.herokuapp.com/user/' + uid),
     );
+    currentUser = parseFromJson(response);
+
+    return response;
+  }
+
+  Future<Utilisateur> findUserByEmail(String email) async {
+    final response = await http.get(
+      Uri.parse(
+          'https://privatenanny.herokuapp.com/user/findUserByEmail' + email),
+    );
+    Utilisateur user = parseFromJson(response);
+
+    return user;
+  }
+
+  Utilisateur parseFromJson(response) {
+    Utilisateur user;
     if (response.body != null && response.body != "") {
-      currentUser = Utilisateur.fromJson(jsonDecode(response.body));
+      user = Utilisateur.fromJson(jsonDecode(response.body));
 
       final contacts = (jsonDecode(response.body)["contacts"] as List)
           .map((data) => Utilisateur.fromJson(data))
@@ -27,12 +44,11 @@ class UserService {
           .map((data) => Task.fromJson(data))
           .toList();
 
-      currentUser.groups = groups;
-      currentUser.contacts = contacts;
-      currentUser.tasks = tasks;
+      user.groups = groups;
+      user.contacts = contacts;
+      user.tasks = tasks;
     }
-
-    return response;
+    return user;
   }
 
   Future<http.Response> createUser(Utilisateur user) {
@@ -63,6 +79,31 @@ class UserService {
         'pseudo': user.pseudo,
         'displayName': user.displayName,
         'phoneNo': user.phoneNo
+      }),
+    );
+  }
+
+  Future<http.Response> addUserToContact(String uid, Utilisateur contact) {
+    return http.put(
+      Uri.parse(
+          'https://privatenanny.herokuapp.com/user/' + uid + '/contacts/'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'uid': contact.uid,
+      }),
+    );
+  }
+
+  Future<http.Response> addUserToGroup(String uid, Group group) {
+    return http.put(
+      Uri.parse('https://privatenanny.herokuapp.com/user/' + uid + '/groups/'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'groupName': group.groupName,
       }),
     );
   }
