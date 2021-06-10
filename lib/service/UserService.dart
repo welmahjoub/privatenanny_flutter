@@ -12,7 +12,7 @@ class UserService {
     final response = await http.get(
       Uri.parse('https://privatenanny.herokuapp.com/user/' + uid),
     );
-    currentUser = parseFromJson(response);
+    currentUser = parseFromJson(jsonDecode(response.body));
 
     return response;
   }
@@ -22,25 +22,36 @@ class UserService {
       Uri.parse(
           'https://privatenanny.herokuapp.com/user/findUserByEmail' + email),
     );
-    Utilisateur user = parseFromJson(response);
+    Utilisateur user = parseFromJson(jsonDecode(response.body));
 
     return user;
   }
 
+  Future<List<Utilisateur>> getAllUser() async {
+    final response = await http.get(
+      Uri.parse('https://privatenanny.herokuapp.com/user/'),
+    );
+    Iterable l = json.decode(response.body);
+    List<Utilisateur> users =
+        List<Utilisateur>.from(l.map((model) => parseFromJson(model)));
+
+    return users;
+  }
+
   Utilisateur parseFromJson(response) {
     Utilisateur user;
-    if (response.body != null && response.body != "") {
-      user = Utilisateur.fromJson(jsonDecode(response.body));
+    if (response != null && response != "") {
+      user = Utilisateur.fromJson(response);
 
-      final contacts = (jsonDecode(response.body)["contacts"] as List)
+      final contacts = (response["contacts"] as List)
           .map((data) => Utilisateur.fromJson(data))
           .toList();
 
-      final groups = (jsonDecode(response.body)["groups"] as List)
+      final groups = (response["groups"] as List)
           .map((data) => Group.fromJson(data))
           .toList();
 
-      final tasks = (jsonDecode(response.body)["taskList"] as List)
+      final tasks = (response["taskList"] as List)
           .map((data) => Task.fromJson(data))
           .toList();
 

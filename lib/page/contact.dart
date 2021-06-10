@@ -161,7 +161,7 @@ class BottomSection extends StatelessWidget {
       ],
       onTap: (ValueKey) => {
         Navigator.push(context,
-            MaterialPageRoute(builder: (context) => (CreatNewContact())))
+            MaterialPageRoute(builder: (context) => (ContactFormPage())))
       },
     );
   }
