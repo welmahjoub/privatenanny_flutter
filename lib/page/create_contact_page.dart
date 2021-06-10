@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:private_nanny/model/group.dart';
 import 'package:private_nanny/model/utilisateur.dart';
+import 'package:private_nanny/page/contact.dart';
 import 'package:private_nanny/page/home.dart';
 import 'package:private_nanny/page/widgets.dart';
 import 'package:private_nanny/service/UserService.dart';
@@ -19,10 +20,11 @@ class ContactFormPage extends StatefulWidget {
 
 class _contactFormPageState extends State<ContactFormPage> {
   List<Utilisateur> _usersSelected;
+  List<Utilisateur> users;
 
   final Widgets _widgets = Widgets();
   final AuthService _authService = AuthService();
-  List _filterContactList;
+  List _filterContactList = [];
   bool editable;
   UserService back = UserService();
 
@@ -33,9 +35,13 @@ class _contactFormPageState extends State<ContactFormPage> {
 
   @override
   void initState() {
+    // todo : ne pas afficher les users qui sont deja en contacts avec lui
     super.initState();
-    back.getAllUser().then((value) {
-      _filterContactList = value;
+    back.getAllUser().then((liste) {
+      liste.forEach((element) {
+        if (!UserService.currentUser.contacts.contains(element))
+          _filterContactList.add(element);
+      });
     });
     _usersSelected = [];
   }
@@ -117,8 +123,7 @@ class _contactFormPageState extends State<ContactFormPage> {
                                     onChanged: (value) {
                                       setModalState(() {
                                         // Fixme correction du filtre
-                                        _filterContactList = UserService
-                                            .currentUser.contacts
+                                        _filterContactList = _filterContactList
                                             .where((user) => user.displayName
                                                 .toLowerCase()
                                                 .contains(value))
@@ -170,7 +175,7 @@ class _contactFormPageState extends State<ContactFormPage> {
                                           },
                                         )
                                       : Center(
-                                          child: CircularProgressIndicator(),
+                                          child: Text("no users to add "),
                                         ),
                                 ),
                               ],
@@ -200,28 +205,20 @@ class _contactFormPageState extends State<ContactFormPage> {
   }
 
   void _sendGroup(BuildContext context) {
-    widget.group.groupOwner = UserService.currentUser;
-    widget.group.groupMembers = _usersSelected;
-    print("nom : " + widget.group.groupName);
-    print("Membres : " + widget.group.groupMembers.toString());
-    print("Owner : " + widget.group.groupOwner.toString());
+    print(_usersSelected.length);
 
-    //print(widget.group.toJson().toString());
-    // _groupService.createGroup(widget.group).then((value) {
-    //   if ([200, 201, 202].contains(value.statusCode)) {
-    //     ScaffoldMessenger.of(context)
-    //         .showSnackBar(_buildSnackBar('Le groupe a été bien créé'));
-    //     UserService user = UserService();
-    //     user.updateCurretUser(UserService.currentUser.uid);
-    //     Navigator.push(
-    //         context, MaterialPageRoute(builder: (context) => HomeScreen()));
-    //   } else
-    //     ScaffoldMessenger.of(context)
-    //         .showSnackBar(_buildSnackBar('Une erreur s\'est produite'));
-    // }).onError((error, stackTrace) {
-    //   ScaffoldMessenger.of(context)
-    //       .showSnackBar(_buildSnackBar('Une erreur s\'est produite'));
-    // });
+    _usersSelected.forEach((contact) {
+      back.addUserToContact(UserService.currentUser.uid, contact).then((value) {
+        print(value.statusCode);
+      });
+      UserService.currentUser.contacts.add(contact);
+    });
+
+    ScaffoldMessenger.of(context)
+        .showSnackBar(_buildSnackBar('Les contacts ont été bien crés'));
+
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => ContactScreen()));
   }
 
   Widget _buildSnackBar(text) {
