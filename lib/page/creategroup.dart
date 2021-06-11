@@ -117,13 +117,11 @@ class _GroupFormPageState extends State<GroupFormPage> {
         deleteIcon: Icon(
           Icons.remove_circle,
         ),
-        onDeleted: widget.editable
-            ? () {
+        onDeleted:  () {
           setState(() {
             _usersSelected.remove(element);
           });
-        }
-            : null,
+        },
       ));
     });
 
