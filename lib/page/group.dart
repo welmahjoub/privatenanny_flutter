@@ -87,8 +87,6 @@ class _GroupScreenState extends State<GroupScreen> {
                       return ListTile(
                         title: Text(initialList[index]),
                         onTap: () {
-                        // Update the state of the app.
-                        // ...
                         Navigator.push(
                         context, MaterialPageRoute(builder: (context) => GroupFormPage(group:groupList[index], editable:true)));
                         },
