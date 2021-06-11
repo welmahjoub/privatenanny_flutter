@@ -63,7 +63,7 @@ class CreatNewContact extends StatelessWidget {
           .addUserToContact(UserService.currentUser.uid, user)
           .then((response) => print(response.statusCode));
       service
-          .addUserToGroup(UserService.currentUser.uid, new Group("GROUPE"))
+          .addUserToGroup(UserService.currentUser.uid, new Group.withGroupName("GROUPE"))
           .then((value) => print(value.statusCode));
     });
   }

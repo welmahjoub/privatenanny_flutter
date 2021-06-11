@@ -89,7 +89,6 @@ class _GroupFormPageState extends State<GroupFormPage> {
             children: [
               Container(
                 child: TextFormField(
-                  readOnly: !widget.editable,
                   maxLength: 30,
                   controller: _nameController,
                   validator: (value) {
@@ -237,7 +236,6 @@ class _GroupFormPageState extends State<GroupFormPage> {
                   icon: Icon(Icons.add, size: 18),
                   label: Text('Ajouter un contact')),
             ),
-            visible: widget.editable,
           ),
         ],
       ),
@@ -287,7 +285,7 @@ class _GroupFormPageState extends State<GroupFormPage> {
       _groupService.updateGroup(widget.group).then((value) {
         if ([201, 202, 200].contains(value.statusCode)) {
           ScaffoldMessenger.of(context)
-              .showSnackBar(_buildSnackBar('Le groupe a été bien modifiée'));
+              .showSnackBar(_buildSnackBar('Le groupe a bien été modifié'));
         } else
           ScaffoldMessenger.of(context)
               .showSnackBar(_buildSnackBar('Une erreur s\'est produite'));
