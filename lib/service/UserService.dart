@@ -95,9 +95,8 @@ class UserService {
   }
 
   Future<http.Response> addUserToContact(String uid, Utilisateur contact) {
-    return http.put(
-      Uri.parse(
-          'https://privatenanny.herokuapp.com/user/' + uid + '/contacts/'),
+    return http.post(
+      Uri.parse('https://privatenanny.herokuapp.com/user/' + uid + '/contacts'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

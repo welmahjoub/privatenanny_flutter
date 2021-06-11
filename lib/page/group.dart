@@ -27,17 +27,10 @@ class _GroupScreenState extends State<GroupScreen> {
     super.initState();
 
     setState(() {
-      groupList =
-      UserService.currentUser.groups.toList();
+      groupList = UserService.currentUser.groups.toList();
       initialList =
           UserService.currentUser.groups.map((e) => e.groupName).toList();
     });
-
-    // back
-    //     .getContacts(_authService.auth.currentUser.uid)
-    //     .then((value) => setState(() {
-    //           initialList = value.map((e) => e.displayName).toList();
-    //         }));
   }
 
   @override
@@ -56,15 +49,11 @@ class _GroupScreenState extends State<GroupScreen> {
                     borderRadius: const BorderRadius.all(
                       const Radius.circular(20.0),
                     ),
-                    borderSide: BorderSide(
-                        color: Colors.blue,
-                        width: 2
-                    ),
+                    borderSide: BorderSide(color: Colors.blue, width: 2),
                   ),
                   focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.white, width: 32.0),
-                      borderRadius: BorderRadius.circular(25.0)
-                  ),
+                      borderRadius: BorderRadius.circular(25.0)),
                   filled: true,
                   hintStyle: new TextStyle(color: Colors.grey[800]),
                   //hintText: "Rechercher un groupe",
@@ -81,13 +70,12 @@ class _GroupScreenState extends State<GroupScreen> {
             ),
           ),
           Container(
-            padding:  const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
-           child : ActionButton(
-              onPressed: () =>
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => GroupFormPage(
+            padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
+            child: ActionButton(
+              onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => GroupFormPage(
                             group: new Group(),
                             editable: false,
                           ))),
@@ -96,20 +84,21 @@ class _GroupScreenState extends State<GroupScreen> {
           ),
           if (filteredList.length == 0 && _textController.text.isEmpty)
             Expanded(
-                child: ListView.builder(
-                    itemCount: initialList.length,
-                    itemBuilder: (BuildContext context, index) {
-                      return ListTile(
-                        title: Text(initialList[index]),
-                        onTap: () {
+              child: ListView.builder(
+                  itemCount: initialList.length,
+                  itemBuilder: (BuildContext context, index) {
+                    return ListTile(
+                      title: Text(initialList[index]),
+                      onTap: () {
                         Navigator.push(
-                        context, MaterialPageRoute(builder: (context) => GroupFormPage(group:groupList[index], editable:true)));
-                        },
-                      );
-                    }
-                ),
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => GroupFormPage(
+                                    group: groupList[index], editable: true)));
+                      },
+                    );
+                  }),
             )
-
           else if (filteredList.length == 0 && _textController.text.isNotEmpty)
             Expanded(
               child: Container(

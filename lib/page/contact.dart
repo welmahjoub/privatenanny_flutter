@@ -3,6 +3,7 @@ import 'package:private_nanny/model/utilisateur.dart';
 import 'package:private_nanny/page/create_contact_page.dart';
 import 'package:private_nanny/service/auth.dart';
 import 'package:private_nanny/service/UserService.dart';
+import 'package:private_nanny/widget/expandable_fab.dart';
 import 'widgets.dart';
 
 class ContactScreen extends StatefulWidget {
@@ -12,28 +13,23 @@ class ContactScreen extends StatefulWidget {
 
 class _ContactScreenState extends State<ContactScreen> {
   AuthService _authService = AuthService();
+  UserService back = UserService();
 
   TextEditingController _textController = TextEditingController();
-  List<String> initialList = List();
-  List<String> filteredList = List();
-  List<Utilisateur> contactList;
-
-  UserService back = UserService();
+  List<String> initialList = [];
+  List<String> filteredList = [];
+  List<Utilisateur> groupList = [];
 
   Widgets widgets = Widgets();
 
   @override
   void initState() {
     super.initState();
-    print(UserService.currentUser);
 
     setState(() {
-      if (UserService.currentUser != null) {
-        initialList =
-            UserService.currentUser.contacts.map((e) => e.displayName).toList();
-      } else {
-        initialList = [];
-      }
+      groupList = UserService.currentUser.contacts.toList();
+      initialList =
+          UserService.currentUser.contacts.map((e) => e.displayName).toList();
     });
   }
 
@@ -55,9 +51,12 @@ class _ContactScreenState extends State<ContactScreen> {
                     ),
                     borderSide: BorderSide(color: Colors.blue, width: 2),
                   ),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white, width: 32.0),
+                      borderRadius: BorderRadius.circular(25.0)),
                   filled: true,
                   hintStyle: new TextStyle(color: Colors.grey[800]),
-                  //hintText: "Rechercher un contact",
+                  //hintText: "Rechercher un groupe",
                   fillColor: Colors.white70),
               controller: _textController,
               onChanged: (text) {
@@ -70,15 +69,25 @@ class _ContactScreenState extends State<ContactScreen> {
               },
             ),
           ),
+          Container(
+            padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
+            child: ActionButton(
+              onPressed: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ContactFormPage())),
+              icon: const Icon(Icons.add_circle_outline_rounded),
+            ),
+          ),
           if (filteredList.length == 0 && _textController.text.isEmpty)
             Expanded(
-                child: ListView.builder(
-                    itemCount: initialList.length,
-                    itemBuilder: (BuildContext context, index) {
-                      return ListTile(
-                        title: Text(initialList[index]),
-                      );
-                    }))
+              child: ListView.builder(
+                  itemCount: initialList.length,
+                  itemBuilder: (BuildContext context, index) {
+                    return ListTile(
+                      title: Text(initialList[index]),
+                      onTap: () {},
+                    );
+                  }),
+            )
           else if (filteredList.length == 0 && _textController.text.isNotEmpty)
             Expanded(
               child: Container(
@@ -98,71 +107,6 @@ class _ContactScreenState extends State<ContactScreen> {
             ),
         ],
       ),
-      bottomNavigationBar: BottomSection(),
-    );
-  }
-}
-
-class BottomSection extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    // return BottomNavigationBar(
-    //   backgroundColor: Colors.blue,
-    //   showSelectedLabels: false,
-    //   showUnselectedLabels: false,
-    //   items: [
-    //     BottomNavigationBarItem(
-    //       icon: Icon(
-    //         Icons.arrow_back_ios_rounded,
-    //         color: Colors.white,
-    //       ),
-    //       label: '',
-    //     ),
-    //     BottomNavigationBarItem(
-    //         icon: Text(
-    //           "Nouveau contact",
-    //           textAlign: TextAlign.center,
-    //           style: TextStyle(
-    //             color: Colors.white,
-    //             fontSize: 15,
-    //             fontWeight: FontWeight.w500,
-    //           ),
-    //         ),
-    //         label: ''),
-    //     BottomNavigationBarItem(
-    //       icon: Icon(
-    //         Icons.add_circle,
-    //         color: Colors.white,
-    //       ),
-    //       label: '',
-    //     ),
-    //   ],
-    // );
-    return BottomNavigationBar(
-      backgroundColor: Colors.blue,
-      showSelectedLabels: false,
-      showUnselectedLabels: false,
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-            icon: Text(
-              "Nouveau contact",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            label: ''),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.add_circle, color: Colors.white),
-          label: '',
-        ),
-      ],
-      onTap: (ValueKey) => {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => (ContactFormPage())))
-      },
     );
   }
 }
