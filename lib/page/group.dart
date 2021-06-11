@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:private_nanny/model/group.dart';
 import 'package:private_nanny/service/UserService.dart';
 import 'package:private_nanny/service/auth.dart';
+import 'creategroup.dart';
 import 'widgets.dart';
 
 class GroupScreen extends StatefulWidget {
@@ -13,8 +15,9 @@ class _GroupScreenState extends State<GroupScreen> {
   UserService back = UserService();
 
   TextEditingController _textController = TextEditingController();
-  List<String> initialList = List();
-  List<String> filteredList = List();
+  List<String> initialList = [];
+  List<String> filteredList = [];
+  List<Group> groupList = [];
 
   Widgets widgets = Widgets();
 
@@ -23,13 +26,17 @@ class _GroupScreenState extends State<GroupScreen> {
     super.initState();
 
     setState(() {
-      if (UserService.currentUser != null) {
-        initialList =
-            UserService.currentUser.groups.map((e) => e.groupName).toList();
-      } else {
-        initialList = [];
-      }
+      groupList =
+      UserService.currentUser.groups.toList();
+      initialList =
+          UserService.currentUser.groups.map((e) => e.groupName).toList();
     });
+
+    // back
+    //     .getContacts(_authService.auth.currentUser.uid)
+    //     .then((value) => setState(() {
+    //           initialList = value.map((e) => e.displayName).toList();
+    //         }));
   }
 
   @override
@@ -48,14 +55,18 @@ class _GroupScreenState extends State<GroupScreen> {
                     borderRadius: const BorderRadius.all(
                       const Radius.circular(20.0),
                     ),
-                    borderSide: BorderSide(color: Colors.blue, width: 2),
+                    borderSide: BorderSide(
+                        color: Colors.blue,
+                        width: 2
+                    ),
                   ),
                   focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.white, width: 32.0),
-                      borderRadius: BorderRadius.circular(25.0)),
+                      borderRadius: BorderRadius.circular(25.0)
+                  ),
                   filled: true,
                   hintStyle: new TextStyle(color: Colors.grey[800]),
-                  //hintText: "Rechercher un contact",
+                  //hintText: "Rechercher un groupe",
                   fillColor: Colors.white70),
               controller: _textController,
               onChanged: (text) {
@@ -75,8 +86,15 @@ class _GroupScreenState extends State<GroupScreen> {
                     itemBuilder: (BuildContext context, index) {
                       return ListTile(
                         title: Text(initialList[index]),
+                        onTap: () {
+                        Navigator.push(
+                        context, MaterialPageRoute(builder: (context) => GroupFormPage(group:groupList[index], editable:true)));
+                        },
                       );
-                    }))
+                    }
+                ),
+            )
+
           else if (filteredList.length == 0 && _textController.text.isNotEmpty)
             Expanded(
               child: Container(
