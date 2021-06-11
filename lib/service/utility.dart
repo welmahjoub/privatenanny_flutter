@@ -5,7 +5,6 @@ import 'package:private_nanny/service/UserService.dart';
 class Utility {
   static Task splitSpeechText(String text) {
     text = text.toLowerCase();
-    //String text = "prévient thomas de s'habiller à 17H pour le rugby";
     List<String> textes = text.split(" ");
     var date = new DateTime.now();
     List<String> Allcontacts = UserService.currentUser?.contacts

@@ -36,12 +36,12 @@ class _HomeScreenState extends State<HomeScreen> {
       _userTasksToDo = UserService.currentUser.tasks
           .where((element) => !element.isValidated)
           .toList();
-      _userTasksToDo.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+      _userTasksToDo.sort((a, b) => a.dateTime?.compareTo(b.dateTime));
 
       _userTasksDone = UserService.currentUser.tasks
           .where((element) => element.isValidated)
           .toList();
-      _userTasksDone.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+      _userTasksDone.sort((a, b) => a.dateTime?.compareTo(b.dateTime));
     }
   }
 

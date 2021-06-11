@@ -6,6 +6,9 @@ import 'package:private_nanny/model/task.dart';
 
 class TaskService {
   Future<http.Response> createTask(Task task) {
+    if(task.dateTime == null){
+      task.dateTime = new DateTime.now();
+    }
     return http.post(
       Uri.parse('https://privatenanny.herokuapp.com/task/'),
       headers: <String, String>{
