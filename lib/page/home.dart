@@ -31,18 +31,18 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _speech = stt.SpeechToText();
-    // print(_authService.auth.currentUser.uid);
-    // if (UserService.currentUser?.tasks != null) {
-    //   _userTasksToDo = UserService.currentUser.tasks
-    //       .where((element) => !element.isValidated)
-    //       .toList();
-    //   _userTasksToDo.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+    print(_authService.auth.currentUser.uid);
+    if (UserService.currentUser?.tasks != null) {
+      _userTasksToDo = UserService.currentUser.tasks
+          .where((element) => !element.isValidated)
+          .toList();
+      _userTasksToDo.sort((a, b) => a.dateTime.compareTo(b.dateTime));
 
-    //   _userTasksDone = UserService.currentUser.tasks
-    //       .where((element) => element.isValidated)
-    //       .toList();
-    //   _userTasksDone.sort((a, b) => a.dateTime.compareTo(b.dateTime));
-    // }
+      _userTasksDone = UserService.currentUser.tasks
+          .where((element) => element.isValidated)
+          .toList();
+      _userTasksDone.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+    }
   }
 
   @override
