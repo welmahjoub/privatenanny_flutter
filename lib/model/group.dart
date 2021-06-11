@@ -5,13 +5,17 @@ class Group {
   String groupName;
   Utilisateur groupOwner;
   List<Utilisateur> groupMembers;
+  Group.withGroupName(this.groupName);
+  Group(){
+    this.groupName ='';
 
-  Group(this.groupName);
+
+  }
 
   Group.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         groupName = json['groupName'],
-        /*groupOwner = json['groupOwner'],*/
+        groupOwner = Utilisateur.fromJson(json['groupOwner']),
         groupMembers = (json['groupMembers'] as List)
             .map((data) => Utilisateur.fromJson(data))
             .toList();
@@ -20,8 +24,9 @@ class Group {
   Map<String, dynamic>  toJson()  {
     List<Map<String, dynamic>> auxMembers = groupMembers?.map((e) => e.toJson())?.toList();
     return {
-      'groupOwner': groupOwner.toJson(),
+      'id' : id,
       'groupName' : groupName,
+      'groupOwner': groupOwner.toJson(),
       'groupMembers': auxMembers
     };
   }

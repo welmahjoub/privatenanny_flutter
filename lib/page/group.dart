@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:private_nanny/model/group.dart';
 import 'package:private_nanny/service/UserService.dart';
 import 'package:private_nanny/service/auth.dart';
+import 'package:private_nanny/widget/expandable_fab.dart';
 import 'creategroup.dart';
 import 'widgets.dart';
 
@@ -77,6 +78,20 @@ class _GroupScreenState extends State<GroupScreen> {
                       .toList();
                 });
               },
+            ),
+          ),
+          Container(
+            padding:  const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
+           child : ActionButton(
+              onPressed: () =>
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => GroupFormPage(
+                            group: new Group(),
+                            editable: false,
+                          ))),
+              icon: const Icon(Icons.add_circle_outline_rounded),
             ),
           ),
           if (filteredList.length == 0 && _textController.text.isEmpty)

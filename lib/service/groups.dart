@@ -6,7 +6,7 @@ import 'package:private_nanny/model/group.dart';
 class GroupService {
   Future<http.Response> createGroup(Group group) {
     return http.post(
-        Uri.parse('https://privatenanny.herokuapp.com/group/saveGroup'),
+        Uri.parse('https://privatenanny.herokuapp.com/group/'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
