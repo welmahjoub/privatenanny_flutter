@@ -42,8 +42,11 @@ class _contactFormPageState extends State<ContactFormPage> {
         UserService.currentUser.contacts.map((e) => e.uid).toList();
 
     back.getAllUser().then((liste) {
-      _filterContactList =
-          liste?.where((element) => !contacts.contains(element.uid))?.toList();
+      _filterContactList = liste
+          ?.where((element) =>
+              !contacts.contains(element.uid) &&
+              element.uid != UserService.currentUser.uid)
+          ?.toList();
     });
 
     _usersSelected = [];
