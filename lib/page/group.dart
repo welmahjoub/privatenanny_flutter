@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:private_nanny/model/group.dart';
 import 'package:private_nanny/service/UserService.dart';
 import 'package:private_nanny/service/auth.dart';
-import 'group_edit.dart';
 import 'widgets.dart';
 
 class GroupScreen extends StatefulWidget {
@@ -18,24 +16,20 @@ class _GroupScreenState extends State<GroupScreen> {
   List<String> initialList = List();
   List<String> filteredList = List();
 
-  List<Group> groupList = List();
-
   Widgets widgets = Widgets();
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     setState(() {
-      groupList = UserService.currentUser.groups;
+      if (UserService.currentUser != null) {
+        initialList =
+            UserService.currentUser.groups.map((e) => e.groupName).toList();
+      } else {
+        initialList = [];
+      }
     });
-
-    // back
-    //     .getContacts(_authService.auth.currentUser.uid)
-    //     .then((value) => setState(() {
-    //           initialList = value.map((e) => e.displayName).toList();
-    //         }));
   }
 
   @override
@@ -54,15 +48,11 @@ class _GroupScreenState extends State<GroupScreen> {
                     borderRadius: const BorderRadius.all(
                       const Radius.circular(20.0),
                     ),
-                    borderSide: BorderSide(
-                        color: Colors.blue,
-                        width: 2
-                    ),
+                    borderSide: BorderSide(color: Colors.blue, width: 2),
                   ),
                   focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.white, width: 32.0),
-                      borderRadius: BorderRadius.circular(25.0)
-                  ),
+                      borderRadius: BorderRadius.circular(25.0)),
                   filled: true,
                   hintStyle: new TextStyle(color: Colors.grey[800]),
                   //hintText: "Rechercher un contact",
@@ -81,12 +71,10 @@ class _GroupScreenState extends State<GroupScreen> {
           if (filteredList.length == 0 && _textController.text.isEmpty)
             Expanded(
                 child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: groupList.length,
+                    itemCount: initialList.length,
                     itemBuilder: (BuildContext context, index) {
                       return ListTile(
-                        title: Text(groupList[index].groupName),
-                        onTap: () => displayTask(groupList[index]),
+                        title: Text(initialList[index]),
                       );
                     }))
           else if (filteredList.length == 0 && _textController.text.isNotEmpty)
@@ -109,9 +97,5 @@ class _GroupScreenState extends State<GroupScreen> {
         ],
       ),
     );
-  }
-
-  displayTask(Group group) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => GroupEditPage(group:group)));
   }
 }
