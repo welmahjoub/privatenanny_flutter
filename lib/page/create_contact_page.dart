@@ -37,12 +37,15 @@ class _contactFormPageState extends State<ContactFormPage> {
   void initState() {
     // todo : ne pas afficher les users qui sont deja en contacts avec lui
     super.initState();
+
+    List<String> contacts =
+        UserService.currentUser.contacts.map((e) => e.uid).toList();
+
     back.getAllUser().then((liste) {
-      liste.forEach((element) {
-        if (!UserService.currentUser.contacts.contains(element))
-          _filterContactList.add(element);
-      });
+      _filterContactList =
+          liste?.where((element) => !contacts.contains(element.uid))?.toList();
     });
+
     _usersSelected = [];
   }
 
