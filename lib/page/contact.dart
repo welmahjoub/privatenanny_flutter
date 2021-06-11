@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:private_nanny/model/utilisateur.dart';
-import 'package:private_nanny/page/CreatContact.dart';
+import 'package:private_nanny/page/create_contact_page.dart';
 import 'package:private_nanny/service/auth.dart';
 import 'package:private_nanny/service/UserService.dart';
 import 'widgets.dart';
@@ -161,7 +161,7 @@ class BottomSection extends StatelessWidget {
       ],
       onTap: (ValueKey) => {
         Navigator.push(context,
-            MaterialPageRoute(builder: (context) => (CreatNewContact())))
+            MaterialPageRoute(builder: (context) => (ContactFormPage())))
       },
     );
   }
