@@ -18,7 +18,8 @@ class TaskFormPage extends StatefulWidget {
   Task task;
 }
 
-class _TaskFormPageState extends State<TaskFormPage> {  DateTime _dateTime;
+class _TaskFormPageState extends State<TaskFormPage> {
+  DateTime _dateTime;
   bool _switchValue;
   Repeatition _dropdownValue;
   List<Utilisateur> _usersSelected;
@@ -362,7 +363,14 @@ class _TaskFormPageState extends State<TaskFormPage> {  DateTime _dateTime;
           ScaffoldMessenger.of(context)
               .showSnackBar(_buildSnackBar('La tâche a été bien créée'));
           UserService user = UserService();
-          user.updateCurretUser(UserService.currentUser.uid);
+
+          if (UserService.currentUser.tasks == null) {
+            UserService.currentUser.tasks = [];
+          }
+          UserService.currentUser.tasks?.add(widget.task);
+          user
+              .updateCurretUser(UserService.currentUser.uid)
+              .then((value) => print(value.statusCode));
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => HomeScreen()));
         } else

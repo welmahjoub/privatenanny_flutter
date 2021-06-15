@@ -56,7 +56,10 @@ class _PorfilePageState extends State<PorfilePage> {
     var user = Utilisateur(_email, _name, _phone, _username);
     user.uid = UserService.currentUser.uid;
     back.updateUser(user).then((value) {
-      back.updateCurretUser(UserService.currentUser.uid);
+      UserService.currentUser.displayName = _name;
+      UserService.currentUser.pseudo = _username;
+      UserService.currentUser.phoneNo = _phone;
+
       print(value.statusCode);
       print(UserService.currentUser.toJson());
     });
@@ -98,12 +101,13 @@ class _PorfilePageState extends State<PorfilePage> {
                 onSaved: (val) => _email = val,
               ),
               TextFormField(
-                initialValue: _phone,
-                decoration: InputDecoration(labelText: 'Numéro de téléphone'),
-                validator: (val) =>
-                    val.length < 10 ? 'Numéro de téléphone trop court.' : null,
-                onSaved: (val) => _phone = val,
-              ),
+                  initialValue: _phone,
+                  decoration: InputDecoration(labelText: 'Numéro de téléphone'),
+                  validator: (val) => val.length < 10
+                      ? 'Numéro de téléphone trop court.'
+                      : null,
+                  onSaved: (val) => _phone = val,
+                  keyboardType: TextInputType.number),
               TextFormField(
                 decoration: InputDecoration(labelText: 'Nouveau Mot de passe'),
                 onSaved: (val) => _password = val,
