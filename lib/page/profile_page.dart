@@ -61,7 +61,7 @@ class _PorfilePageState extends State<PorfilePage> {
       UserService.currentUser.phoneNo = _phone;
 
       print(value.statusCode);
-      print(UserService.currentUser.toJson());
+      print(UserService.currentUser?.toJson());
     });
 
     Navigator.push(

@@ -364,10 +364,10 @@ class _TaskFormPageState extends State<TaskFormPage> {
               .showSnackBar(_buildSnackBar('La tâche a été bien créée'));
           UserService user = UserService();
 
-          if (UserService.currentUser.tasks == null) {
-            UserService.currentUser.tasks = [];
-          }
-          UserService.currentUser.tasks?.add(widget.task);
+          // if (UserService.currentUser.tasks == null) {
+          //   UserService.currentUser.tasks = [];
+          // }
+          // UserService.currentUser.tasks?.add(widget.task);
           user
               .updateCurretUser(UserService.currentUser.uid)
               .then((value) => print(value.statusCode));
