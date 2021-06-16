@@ -34,28 +34,27 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _speech = stt.SpeechToText();
     final List<Task> tasks = [];
-    tasks.addAll(UserService.currentUser?.tasks);
-    _taskService.getAllTaskByReceiver(UserService.currentUser.uid).then((value) {
-      tasks.addAll(value.where((element) => !tasks.contains(element)));
+    if (UserService.currentUser?.tasks != null) {
+      tasks.addAll(UserService.currentUser?.tasks);
+    }
+
+    _taskService
+        .getAllTaskByReceiver(UserService.currentUser?.uid)
+        .then((value) {
+      tasks.addAll(value?.where((element) => !tasks.contains(element)));
       setState(() {
-        _userTasksToDo = tasks.where((element) => !element.isValidated)
-            .toList();
+        _userTasksToDo =
+            tasks.where((element) => !element.isValidated).toList();
         _userTasksToDo.sort((a, b) => a.dateTime?.compareTo(b.dateTime));
 
-        _userTasksDone = tasks.where((element) => element.isValidated)
-            .toList();
+        _userTasksDone = tasks.where((element) => element.isValidated).toList();
         _userTasksDone.sort((a, b) => a.dateTime?.compareTo(b.dateTime));
       });
     });
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-
-
-
     return Scaffold(
         appBar: _widgets.appBar(context, "Accueil"),
         drawer: _widgets.drawer(context, _authService),
@@ -72,15 +71,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => TaskFormPage(
-                        task: new Task(),
-                        editable: true,
-                      ))),
+                            task: new Task(),
+                            editable: true,
+                          ))),
               icon: const Icon(Icons.edit),
             ),
           ],
         ),
         body: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
+            scrollDirection: Axis.vertical,
             child: Column(children: [
               Visibility(
                 visible: _text.isNotEmpty && _isListening,
@@ -140,10 +139,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                     _userTasksToDo.removeAt(index);
                                     _userTasksDone.add(task);
 
-                                    _userTasksToDo.sort(
-                                            (a, b) => a.dateTime.compareTo(b.dateTime));
-                                    _userTasksDone.sort(
-                                            (a, b) => a.dateTime.compareTo(b.dateTime));
+                                    _userTasksToDo.sort((a, b) =>
+                                        a.dateTime.compareTo(b.dateTime));
+                                    _userTasksDone.sort((a, b) =>
+                                        a.dateTime.compareTo(b.dateTime));
                                   });
                                 }),
                             title: Text(_userTasksToDo[index].title),
@@ -197,10 +196,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                     _userTasksDone.removeAt(index);
                                     _userTasksToDo.add(task);
 
-                                    _userTasksToDo.sort(
-                                            (a, b) => a.dateTime.compareTo(b.dateTime));
-                                    _userTasksDone.sort(
-                                            (a, b) => a.dateTime.compareTo(b.dateTime));
+                                    _userTasksToDo.sort((a, b) =>
+                                        a.dateTime.compareTo(b.dateTime));
+                                    _userTasksDone.sort((a, b) =>
+                                        a.dateTime.compareTo(b.dateTime));
                                   });
                                 }),
                             title: Text(_userTasksDone[index].title),
@@ -245,9 +244,9 @@ class _HomeScreenState extends State<HomeScreen> {
             context,
             MaterialPageRoute(
                 builder: (context) => TaskFormPage(
-                  task: Utility.splitSpeechText(_text),
-                  editable: true,
-                )));
+                      task: Utility.splitSpeechText(_text),
+                      editable: true,
+                    )));
       } else {
         print("started");
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -264,8 +263,8 @@ class _HomeScreenState extends State<HomeScreen> {
         context,
         MaterialPageRoute(
             builder: (context) => TaskFormPage(
-              task: task,
-              editable: false,
-            )));
+                  task: task,
+                  editable: false,
+                )));
   }
 }
