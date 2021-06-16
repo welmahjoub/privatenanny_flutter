@@ -6,6 +6,7 @@ import 'package:private_nanny/page/task_form.dart';
 import 'package:private_nanny/page/widgets.dart';
 import 'package:private_nanny/service/UserService.dart';
 import 'package:private_nanny/service/auth.dart';
+import 'package:private_nanny/service/task.dart';
 import 'package:private_nanny/service/utility.dart';
 import 'package:private_nanny/widget/expandable_fab.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
@@ -17,6 +18,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final AuthService _authService = AuthService();
+  final TaskService _taskService = TaskService();
   final Widgets _widgets = Widgets();
 
   List<Task> _userTasksToDo = [];
@@ -31,22 +33,29 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _speech = stt.SpeechToText();
-    print(_authService.auth.currentUser.uid);
-    if (UserService.currentUser?.tasks != null) {
-      _userTasksToDo = UserService.currentUser.tasks
-          .where((element) => !element.isValidated)
-          .toList();
-      _userTasksToDo.sort((a, b) => a.dateTime?.compareTo(b.dateTime));
+    final List<Task> tasks = [];
+    tasks.addAll(UserService.currentUser?.tasks);
+    _taskService.getAllTaskByReceiver(UserService.currentUser.uid).then((value) {
+      tasks.addAll(value);
+      setState(() {
+        _userTasksToDo = tasks.where((element) => !element.isValidated)
+            .toList();
+        _userTasksToDo.sort((a, b) => a.dateTime?.compareTo(b.dateTime));
 
-      _userTasksDone = UserService.currentUser.tasks
-          .where((element) => element.isValidated)
-          .toList();
-      _userTasksDone.sort((a, b) => a.dateTime?.compareTo(b.dateTime));
-    }
+        _userTasksDone = tasks.where((element) => element.isValidated)
+            .toList();
+        _userTasksDone.sort((a, b) => a.dateTime?.compareTo(b.dateTime));
+      });
+    });
   }
+
+
 
   @override
   Widget build(BuildContext context) {
+
+
+
     return Scaffold(
         appBar: _widgets.appBar(context, "Accueil"),
         drawer: _widgets.drawer(context, _authService),
@@ -63,144 +72,145 @@ class _HomeScreenState extends State<HomeScreen> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => TaskFormPage(
-                            task: new Task(),
-                            editable: true,
-                          ))),
+                        task: new Task(),
+                        editable: true,
+                      ))),
               icon: const Icon(Icons.edit),
             ),
           ],
         ),
         body: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
             child: Column(children: [
-          Visibility(
-            visible: _text.isNotEmpty && _isListening,
-            child: Container(
-              padding: const EdgeInsets.only(
-                  left: 10, right: 10, bottom: 10, top: 20),
-              child: Text(
-                _text,
-                style: const TextStyle(
-                  fontSize: 15.0,
-                  fontWeight: FontWeight.w500,
+              Visibility(
+                visible: _text.isNotEmpty && _isListening,
+                child: Container(
+                  padding: const EdgeInsets.only(
+                      left: 10, right: 10, bottom: 10, top: 20),
+                  child: Text(
+                    _text,
+                    style: const TextStyle(
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.only(top: 25, left: 10, right: 10),
-            child: Row(
-              children: [
-                Text(
-                  'A Faire',
-                  style: TextStyle(fontWeight: FontWeight.w500),
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 5),
-                  child: Icon(
-                    Icons.check_circle_outline,
-                  ),
-                ),
-                Expanded(
-                  child: Divider(
-                    thickness: 2,
-                    color: Colors.black54,
-                    indent: 5,
-                  ),
-                )
-              ],
-            ),
-          ),
-          Container(
-              padding: const EdgeInsets.all(10.0),
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: _userTasksToDo.length,
-                  itemBuilder: (BuildContext context, index) {
-                    return Card(
-                      child: ListTile(
-                        trailing: IconButton(
-                            color: Colors.blue,
-                            icon: _userTasksToDo[index].isValidated
-                                ? Icon(Icons.check_circle_rounded)
-                                : Icon(Icons.check_circle_outline),
-                            onPressed: () {
-                              setState(() {
-                                Task task = _userTasksToDo[index];
-                                task.isValidated = !task.isValidated;
-                                _userTasksToDo.removeAt(index);
-                                _userTasksDone.add(task);
-
-                                _userTasksToDo.sort(
-                                    (a, b) => a.dateTime.compareTo(b.dateTime));
-                                _userTasksDone.sort(
-                                    (a, b) => a.dateTime.compareTo(b.dateTime));
-                              });
-                            }),
-                        title: Text(_userTasksToDo[index].title),
-                        subtitle: Text(DateFormat('dd/MM/yyyy HH:mm')
-                            .format(_userTasksToDo[index].dateTime)),
-                        onTap: () => displayTask(_userTasksToDo[index]),
+              Container(
+                padding: EdgeInsets.only(top: 25, left: 10, right: 10),
+                child: Row(
+                  children: [
+                    Text(
+                      'A Faire',
+                      style: TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(left: 5),
+                      child: Icon(
+                        Icons.check_circle_outline,
                       ),
-                    );
-                  })),
-          Container(
-            padding: EdgeInsets.only(top: 25, left: 10, right: 10),
-            child: Row(
-              children: [
-                Text(
-                  'Terminées',
-                  style: TextStyle(fontWeight: FontWeight.w500),
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 5),
-                  child: Icon(
-                    Icons.check_circle,
-                  ),
-                ),
-                Expanded(
-                  child: Divider(
-                    thickness: 2,
-                    color: Colors.black54,
-                    indent: 5,
-                  ),
-                )
-              ],
-            ),
-          ),
-          Container(
-              padding: const EdgeInsets.all(10.0),
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: _userTasksDone.length,
-                  itemBuilder: (BuildContext context, index) {
-                    return Card(
-                      child: ListTile(
-                        trailing: IconButton(
-                            color: Colors.blue,
-                            icon: _userTasksDone[index].isValidated
-                                ? Icon(Icons.check_circle_rounded)
-                                : Icon(Icons.check_circle_outline),
-                            onPressed: () {
-                              setState(() {
-                                Task task = _userTasksDone[index];
-                                task.isValidated = !task.isValidated;
-                                _userTasksDone.removeAt(index);
-                                _userTasksToDo.add(task);
-
-                                _userTasksToDo.sort(
-                                    (a, b) => a.dateTime.compareTo(b.dateTime));
-                                _userTasksDone.sort(
-                                    (a, b) => a.dateTime.compareTo(b.dateTime));
-                              });
-                            }),
-                        title: Text(_userTasksDone[index].title),
-                        subtitle: Text(DateFormat('dd/MM/yyyy HH:mm')
-                            .format(_userTasksDone[index].dateTime)),
-                        onTap: () => displayTask(_userTasksDone[index]),
+                    ),
+                    Expanded(
+                      child: Divider(
+                        thickness: 2,
+                        color: Colors.black54,
+                        indent: 5,
                       ),
-                    );
-                  })),
-        ])));
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                  padding: const EdgeInsets.all(10.0),
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: _userTasksToDo.length,
+                      itemBuilder: (BuildContext context, index) {
+                        return Card(
+                          child: ListTile(
+                            trailing: IconButton(
+                                color: Colors.blue,
+                                icon: _userTasksToDo[index].isValidated
+                                    ? Icon(Icons.check_circle_rounded)
+                                    : Icon(Icons.check_circle_outline),
+                                onPressed: () {
+                                  setState(() {
+                                    Task task = _userTasksToDo[index];
+                                    task.isValidated = !task.isValidated;
+                                    _userTasksToDo.removeAt(index);
+                                    _userTasksDone.add(task);
+
+                                    _userTasksToDo.sort(
+                                            (a, b) => a.dateTime.compareTo(b.dateTime));
+                                    _userTasksDone.sort(
+                                            (a, b) => a.dateTime.compareTo(b.dateTime));
+                                  });
+                                }),
+                            title: Text(_userTasksToDo[index].title),
+                            subtitle: Text(DateFormat('dd/MM/yyyy HH:mm')
+                                .format(_userTasksToDo[index].dateTime)),
+                            onTap: () => displayTask(_userTasksToDo[index]),
+                          ),
+                        );
+                      })),
+              Container(
+                padding: EdgeInsets.only(top: 25, left: 10, right: 10),
+                child: Row(
+                  children: [
+                    Text(
+                      'Terminées',
+                      style: TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(left: 5),
+                      child: Icon(
+                        Icons.check_circle,
+                      ),
+                    ),
+                    Expanded(
+                      child: Divider(
+                        thickness: 2,
+                        color: Colors.black54,
+                        indent: 5,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                  padding: const EdgeInsets.all(10.0),
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: _userTasksDone.length,
+                      itemBuilder: (BuildContext context, index) {
+                        return Card(
+                          child: ListTile(
+                            trailing: IconButton(
+                                color: Colors.blue,
+                                icon: _userTasksDone[index].isValidated
+                                    ? Icon(Icons.check_circle_rounded)
+                                    : Icon(Icons.check_circle_outline),
+                                onPressed: () {
+                                  setState(() {
+                                    Task task = _userTasksDone[index];
+                                    task.isValidated = !task.isValidated;
+                                    _userTasksDone.removeAt(index);
+                                    _userTasksToDo.add(task);
+
+                                    _userTasksToDo.sort(
+                                            (a, b) => a.dateTime.compareTo(b.dateTime));
+                                    _userTasksDone.sort(
+                                            (a, b) => a.dateTime.compareTo(b.dateTime));
+                                  });
+                                }),
+                            title: Text(_userTasksDone[index].title),
+                            subtitle: Text(DateFormat('dd/MM/yyyy HH:mm')
+                                .format(_userTasksDone[index].dateTime)),
+                            onTap: () => displayTask(_userTasksDone[index]),
+                          ),
+                        );
+                      })),
+            ])));
   }
 
   void _listen() async {
@@ -235,9 +245,9 @@ class _HomeScreenState extends State<HomeScreen> {
             context,
             MaterialPageRoute(
                 builder: (context) => TaskFormPage(
-                      task: Utility.splitSpeechText(_text),
-                      editable: true,
-                    )));
+                  task: Utility.splitSpeechText(_text),
+                  editable: true,
+                )));
       } else {
         print("started");
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -254,8 +264,8 @@ class _HomeScreenState extends State<HomeScreen> {
         context,
         MaterialPageRoute(
             builder: (context) => TaskFormPage(
-                  task: task,
-                  editable: false,
-                )));
+              task: task,
+              editable: false,
+            )));
   }
 }

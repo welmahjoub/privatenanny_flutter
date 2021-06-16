@@ -70,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
                       : (_success
                           ? 'Connexion réussie, uid: '
                           : 'Échec de la connexion'),
-                  style: TextStyle(color: Colors.red),
+                  style: TextStyle(color: Colors.green),
                 ),
               ),
               new FlatButton(

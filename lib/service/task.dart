@@ -27,4 +27,16 @@ class TaskService {
         body: jsonEncode(task.toJson())
     );
   }
+
+  Future<List<Task>> getAllTaskByReceiver(String uid) async {
+    final response = await http.get(
+        Uri.parse('https://privatenanny.herokuapp.com/task/findTasksByReceiver/$uid'),
+    );
+    print(response.body);
+    Iterable l = json.decode(response.body);
+    List<Task> task = List<Task>.from(l.map((model) => Task.fromJson(model)));
+
+    return task;
+  }
+
 }
