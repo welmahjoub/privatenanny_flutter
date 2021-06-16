@@ -36,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final List<Task> tasks = [];
     tasks.addAll(UserService.currentUser?.tasks);
     _taskService.getAllTaskByReceiver(UserService.currentUser.uid).then((value) {
-      tasks.addAll(value);
+      tasks.addAll(value.where((element) => !tasks.contains(element)));
       setState(() {
         _userTasksToDo = tasks.where((element) => !element.isValidated)
             .toList();
